@@ -52,7 +52,6 @@ class Main(QWidget):
 
     def on_add_tab(self, tab: Tab):
         print(f"add tab {tab}")
-        #self.tabs.tab_manager.select_tab(tab)
 
     def on_remove_tab(self, tab: Tab):
         print(f"remove tab {tab}")

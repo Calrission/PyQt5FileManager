@@ -26,6 +26,8 @@ def startTerminalVersion():
 
 
 if __name__ == "__main__":
+    if len(argv) > 2 and argv[1] == "-t":
+        startTerminalVersion()
     app = QApplication(argv)
     main = Main()
     main.show()
