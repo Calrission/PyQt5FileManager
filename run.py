@@ -7,7 +7,7 @@ from sys import argv, exit
 
 
 def startTerminalVersion():
-    tab = Tab("/home/artemii/Загрузки")
+    tab = Tab("")
     while True:
         content = [str(i) for i in tab.folder.children]
         pprint(content)

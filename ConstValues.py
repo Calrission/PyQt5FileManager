@@ -10,7 +10,7 @@ TITLE = "Файлики и папочки"
 # MP (MainPanel) - панель для файлов и папок
 # LP (LeftPanel) - левая панель
 
-START_Y_TP = 0
+START_Y_TP = 5
 END_Y_TP = 30
 START_Y_MP = END_Y_TP
 START_Y_LP = END_Y_TP

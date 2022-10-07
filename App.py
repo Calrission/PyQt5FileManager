@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5 import uic
 from ConstValues import *
-from WindowArea import WindowArea, Areas
+from WindowArea import *
+from PathObjects import *
+from Tab import *
 
 
 class Main(QWidget):
@@ -10,9 +12,10 @@ class Main(QWidget):
         self.tabs = None
         self.left = None
         self.main = None
+
         self.setupWindow()
         self.setupAreas()
-        self.initUITestMarkup()
+        self.initUI()
 
     def setupWindow(self):
         self.setGeometry(0, 0, WIDTH, MAX_WIDTH)
@@ -23,7 +26,11 @@ class Main(QWidget):
         self.setMinimumHeight(MIN_HEIGHT)
 
     def setupAreas(self):
-        self.tabs = WindowArea(window=self, area=Areas.TabPanel)
+        self.tabs = TabWindowArea(window=self, area=Areas.TabPanel,
+                                  on_add_tab=self.on_add_tab,
+                                  on_unselect_tab=self.on_unselect_tab,
+                                  on_select_tab=self.on_select_tab,
+                                  on_remove_tab=self.on_remove_tab)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
         self.main = WindowArea(window=self, area=Areas.MainPanel)
 
@@ -43,5 +50,19 @@ class Main(QWidget):
         mp.move(START_X_MP, START_Y_MP)
         self.main.add_widget(mp)
 
+    def on_add_tab(self, tab: Tab):
+        print(f"add tab {tab}")
+        #self.tabs.tab_manager.select_tab(tab)
+
+    def on_remove_tab(self, tab: Tab):
+        print(f"remove tab {tab}")
+
+    def on_select_tab(self, tab: Tab):
+        print(f"select tab {tab}")
+
+    def on_unselect_tab(self, tab: Tab):
+        print(f"unselect tab {tab}")
+
     def initUI(self):
-        pass
+        self.tabs.tab_manager.add_new_tab("/home/artemii/Загрузки")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")

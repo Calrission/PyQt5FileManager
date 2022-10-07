@@ -31,3 +31,8 @@ class MovingToFolderError(Exception):
 class GetFileFolderError(Exception):
     def __init__(self, file, folder):
         super(GetFileFolderError, self).__init__(f"Не удалось получить файл в папке:\n{file} в {folder}")
+
+
+class SelectTabErrorNotFound(Exception):
+    def __init__(self, tab):
+        super(SelectTabErrorNotFound, self).__init__(f"Не удалось выбрать вкладку {tab}")

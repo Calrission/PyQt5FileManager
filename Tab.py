@@ -32,8 +32,9 @@ class FileSelector:
 
 
 class Tab:
-    def __init__(self, now_path: str, func_for_select=None):
+    def __init__(self, now_path: str = "", func_for_select=None):
         self.folder = Folder(now_path)
+        self.name = self.folder.get_short_name()
         self.selector = FileSelector(self.folder.children)
         self.func_for_select = func_for_select
         self.history = HistoryTab([now_path])
@@ -61,3 +62,65 @@ class Tab:
 
     def open_file(self, file_name: str):
         self.folder.get_file(file_name).open_default_app_os()
+
+    def __str__(self):
+        return self.folder.path
+
+
+class TabManager:
+    def __init__(self, tabs=None,
+                 on_add_tab=None,
+                 on_remove_tab=None,
+                 on_select_tab=None,
+                 on_unselect_tab=None):
+
+        self.on_add_tab = on_add_tab
+        self.on_remove_tab = on_remove_tab
+        self.on_select_tab = on_select_tab
+        self.on_unselect_tab = on_unselect_tab
+
+        self._select_tab_index = None
+
+        self._tabs = tabs if tabs is not None else []
+
+    def add_new_tab(self, path=""):
+        tab = Tab(path)
+        self.add_tab(tab)
+
+    def add_tab(self, tab: Tab):
+        self._tabs.append(tab)
+        if self.on_add_tab is not None:
+            self.on_add_tab(tab)
+        if self._select_tab_index is None:
+            self.select_tab(tab)
+
+    def remove_tab(self, tab: Tab):
+        if self._tabs.index(tab) == self._select_tab_index:
+            self.select_tab(self.get(self._select_tab_index - 1))
+        self._tabs.remove(tab)
+        if self.on_remove_tab is not None:
+            self.on_remove_tab(tab)
+
+    def select_tab(self, tab: Tab):
+        if tab not in self._tabs:
+            raise SelectTabErrorNotFound(tab)
+
+        if self._select_tab_index is not None:
+            self.on_unselect_tab(self.get_select_tab())
+
+        self._select_tab_index = self._tabs.index(tab)
+
+        if self.on_select_tab is not None:
+            self.on_select_tab(tab)
+
+    def get(self, index: int):
+        return self._tabs[index]
+
+    def get_select_tab(self):
+        return self._tabs[self._select_tab_index]
+
+    def get_all_tabs(self):
+        return self._tabs
+
+    def index(self, tab: Tab):
+        return self._tabs.index(tab)

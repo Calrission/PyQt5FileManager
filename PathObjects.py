@@ -122,6 +122,13 @@ class Folder(PathObject):
     def add_to_path(self, obj_name):
         return self.path + "/" + obj_name
 
+    def get_short_name(self):
+        # 1/2/3/4 -> 3/4
+        short = self.path
+        if short.count("/") >= 2:
+            short = "/".join(short.split("/")[-2:])
+        return short
+
 
 class File(PathObject):
     def __init__(self, path: str, name: str = None):
