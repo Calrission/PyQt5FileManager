@@ -3,12 +3,12 @@ from PathObjects import *
 
 
 class FileSelector:
-    def __init__(self, origin_files: list[PathObject]):
+    def __init__(self, origin_files: list):
         self.__origin_files = [i for i in origin_files]
         self.last_single_select = None
         self.selected = []
 
-    def change_origin_files(self, files: list[PathObject]):
+    def change_origin_files(self, files: list):
         self.__init__(files)
 
     def single_select(self, file_name: str):
@@ -33,22 +33,31 @@ class FileSelector:
 
 class Tab:
     def __init__(self, now_path: str, func_for_select=None):
-        self.now_folder = Folder(now_path)
-        self.selector = FileSelector(self.now_folder.children)
+        self.folder = Folder(now_path)
+        self.selector = FileSelector(self.folder.children)
         self.func_for_select = func_for_select
-        self.history = HistoryTab()
+        self.history = HistoryTab([now_path])
 
-    def move_to_folder(self, folder_name: str):
-        self.now_folder.next(folder_name)
-        self.selector.change_origin_files(self.now_folder.children)
-        self.history.add(self.now_folder.path)
+    def move_to_child_folder(self, folder_name: str):
+        self.folder.next(folder_name)
+        self.refresh_on_change_folder()
+
+    def move_to_folder(self, folder_path: str):
+        self.folder.change(folder_path)
+        self.refresh_on_change_folder()
+
+    def refresh_on_change_folder(self):
+        self.selector.change_origin_files(self.folder.children)
+        self.history.add(self.folder.path)
 
     def move_back_history(self):
-        self.now_folder = Folder(self.history.to_prev())
-        self.selector.change_origin_files(self.now_folder.children)
+        self.history.next_path = self.folder.path
+        self.folder = Folder(self.history.to_prev())
+        self.selector.change_origin_files(self.folder.children)
 
     def move_next_history(self):
-        pass
+        if self.history.next_path is not None:
+            self.move_to_folder(self.history.pop_next_path())
 
     def open_file(self, file_name: str):
-        self.now_folder.get_file(file_name).open_default_app_os()
+        self.folder.get_file(file_name).open_default_app_os()

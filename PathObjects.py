@@ -87,7 +87,7 @@ class Folder(PathObject):
         except IndexError:
             raise GetFileFolderError(file_name, self)
 
-    def get_path_object(self, obj: str):
+    def get_child(self, obj: str):
         try:
             return [Folder(self.add_to_path(i)) if self.isdir(i) else File(self.add_to_path(i)) for i in self.children if i == obj][0]
         except IndexError:
@@ -104,6 +104,9 @@ class Folder(PathObject):
             self.__init__(self.path + f"/{next_folder_name}")
         except IndexError:
             raise MovingToFolderError(self, next_folder_name)
+
+    def change(self, new_folder_path: str):
+        self.__init__(new_folder_path)
 
     def change_path(self, new_path: str):
         self.__init__(new_path)
