@@ -54,6 +54,8 @@ class Folder(PathObject):
         self.children = []
         self.children_folders = []
         self.children_files = []
+        if path == "":
+            path = "/"
         if path[-1] == "/" and path.strip() != "/":
             path = path[:-1]
         super().__init__(path, name)
