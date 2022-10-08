@@ -15,7 +15,7 @@ class Main(QWidget):
 
         self.setupWindow()
         self.setupAreas()
-        self.initTestMainArea()
+        self.initUI()
 
     def setupWindow(self):
         self.setGeometry(0, 0, WIDTH, HEIGHT)
@@ -53,7 +53,6 @@ class Main(QWidget):
     def initTestMainArea(self):
         self.initUITestMarkup()
         lst = [QPushButton(f"{i + 1}") for i in range(90)]
-
         [i.resize(WIDTH_ITEM, HEIGHT_ITEM) for i in lst]
         [self.main.add_item(i) for i in lst]
 
@@ -65,6 +64,7 @@ class Main(QWidget):
 
     def on_select_tab(self, tab: Tab):
         print(f"select tab {tab}")
+        self.main.set_tab(tab)
 
     def on_unselect_tab(self, tab: Tab):
         print(f"unselect tab {tab}")

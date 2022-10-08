@@ -37,6 +37,7 @@ class WindowArea:
 
         widget.setParent(self.window)
         widget.move(x, y)
+        widget.show()
         return widget
 
 
@@ -58,7 +59,8 @@ class TabWindowArea(WindowArea):
             on_remove_tab=self._on_remove,
             on_add_tab=self._on_add,
             on_select_tab=self._on_select,
-            on_unselect_tab=self._on_unselect
+            on_unselect_tab=self._on_unselect,
+            on_change_tab=self._on_change
         )
         self._tabs: list[QWidget] = []
 
@@ -101,6 +103,13 @@ class TabWindowArea(WindowArea):
         view.deleteLater()
         self.on_remove_tab(tab)
 
+    def _on_change(self, tab: Tab):
+        view = self._tabs[self.tab_manager.index(tab)]
+        if isinstance(view, QPushButton):
+            view.setText(tab.name)
+            if self.tab_manager.is_select_tab(tab):
+                view.setText("*" + view.text())
+
 
 class MainWindowArea(WindowArea):
 
@@ -113,6 +122,8 @@ class MainWindowArea(WindowArea):
         self.widgets = [[]]
         self.max_column = self.width // (WIDTH_ITEM + MARGIN_ITEM)
         self.max_row = self.height // (HEIGHT_ITEM + MARGIN_ITEM)
+
+        self._tab = None
 
     def _get_x_y_last_item(self):
         last_row = self.widgets[-1]
@@ -130,3 +141,33 @@ class MainWindowArea(WindowArea):
         x, y = self._get_x_y_last_item()
         self.add_widget(widget, x, y)
 
+    def add_items(self, data: list):
+        [self.add_item(item) for item in data]
+
+    def clear(self):
+        [[j.deleteLater() for j in i] for i in self.widgets]
+        self.widgets = [[]]
+
+    def add_item_path_object(self, item: PathObject):
+        btn = QPushButton(item.name)
+        btn.resize(WIDTH_ITEM, HEIGHT_ITEM)
+        if isinstance(item, Folder):
+            btn.clicked.connect(self.click_folder)
+        elif isinstance(item, File):
+            btn.clicked.connect(item.open_default_app_os)
+        self.add_item(btn)
+        return btn
+
+    def click_folder(self):
+        btn = self.window.sender()
+        folder_name = btn.text()
+        self._tab.move_to_child_folder(folder_name)
+
+    def set_new_content_tab(self):
+        self.clear()
+        [self.add_item_path_object(i) for i in self._tab.folder.children]
+
+    def set_tab(self, tab: Tab):
+        self._tab = tab
+        self._tab.add_on_change_folder(lambda x: self.set_new_content_tab())
+        self.set_new_content_tab()

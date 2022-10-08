@@ -23,7 +23,7 @@ class PathObject:
         else:
             self.path += f"/{self.name}"
         self.type = TypePathObject.UNKNOWN
-        self.refresh()
+        self.__detect_type()
 
     def __detect_type(self):
         if os.path.isfile(self.path):
@@ -43,7 +43,7 @@ class PathObject:
         return exists(self.path)
 
     def refresh(self):
-        self.__detect_type()
+        pass
 
     def __repr__(self):
         return f"{self.__class__.__name__}; {self.path}; {self.type}; "
@@ -64,7 +64,6 @@ class Folder(PathObject):
         super().__init__(path, name)
         if self.name is None:
             self._detect_name_from_path()
-        self.refresh()
 
     def __check_type(self):
         if self.type != TypePathObject.FOLDER:
@@ -77,21 +76,21 @@ class Folder(PathObject):
 
     def __detect_children(self):
         lst = listdir(self.path)
-        folders = [folder for folder in lst if self.isdir(folder)]
-        files = [file for file in lst if self.isfile(file)]
+        folders = [Folder(self.path, folder) for folder in lst if self.isdir(folder)]
+        files = [File(self.path, file) for file in lst if self.isfile(file)]
         self.children = folders + files
         self.children_folders = folders
         self.children_files = files
 
     def get_file(self, file_name):
         try:
-            return [File(self.add_to_path(i)) for i in self.children_files if i.name == file_name][0]
+            return [i for i in self.children_files if i.name == file_name][0]
         except IndexError:
             raise GetFileFolderError(file_name, self)
 
     def get_child(self, obj: str):
         try:
-            return [Folder(self.add_to_path(i)) if self.isdir(i) else File(self.add_to_path(i)) for i in self.children if i == obj][0]
+            return [i for i in self.children if i.name == obj][0]
         except IndexError:
             raise GetFileFolderError(obj, self)
 
@@ -114,7 +113,8 @@ class Folder(PathObject):
         self.__init__(new_path)
 
     def isdir(self, obj_name):
-        return os.path.isdir(self.add_to_path(obj_name))
+        res = os.path.isdir(self.add_to_path(obj_name))
+        return res
 
     def isfile(self, obj_file):
         return os.path.isfile(self.add_to_path(obj_file))
@@ -168,7 +168,6 @@ class File(PathObject):
             call(('xdg-open', self.path))
 
     def refresh(self):
-        super().refresh()
         self.__check_type()
         self.__detect_format()
         self.__detect_type_file()
