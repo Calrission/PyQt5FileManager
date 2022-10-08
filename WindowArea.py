@@ -6,6 +6,7 @@ from Tab import *
 from ImageLoaderPixmap import ImageLoaderPixmap
 from QPathObjects import *
 
+
 class Areas(Enum):
     TabPanel = (START_X_TP, END_X_TP, START_Y_TP, END_Y_TP, WIDTH_TP, HEIGHT_TP)
     MainPanel = (START_X_MP, END_X_MP, START_Y_MP, END_Y_MP, WIDTH_MP, HEIGHT_MP)
@@ -46,6 +47,7 @@ class TabWindowArea(WindowArea):
     def __init__(self, window: QWidget,
                  on_add_tab, on_select_tab,
                  on_remove_tab, on_unselect_tab,
+                 on_change_tab,
                  start_x: int = None, end_x: int = None,
                  start_y: int = None, end_y: int = None,
                  width: int = None, height: int = None):
@@ -55,6 +57,7 @@ class TabWindowArea(WindowArea):
         self.on_add_tab = on_add_tab
         self.on_select_tab = on_select_tab
         self.on_unselect_tab = on_unselect_tab
+        self.on_change_tab = on_change_tab
 
         self.tab_manager = TabManager(
             on_remove_tab=self._on_remove,
@@ -85,7 +88,7 @@ class TabWindowArea(WindowArea):
         self.on_add_tab(tab)
 
     def _calc_new_x(self):
-        return sum([i.width() for i in self._tabs]) + 5 * (len(self._tabs) + 1)
+        return self.start_x + sum([i.width() for i in self._tabs]) + 5 * (len(self._tabs) + 1)
 
     def _on_select(self, tab: Tab):
         view = self._tabs[self.tab_manager.index(tab)]
@@ -110,6 +113,7 @@ class TabWindowArea(WindowArea):
             view.setText(tab.name)
             if self.tab_manager.is_select_tab(tab):
                 view.setText("*" + view.text())
+        self.on_change_tab(tab)
 
 
 class MainWindowArea(WindowArea):

@@ -74,6 +74,11 @@ class Folder(PathObject):
         self.__check_type()
         self.__detect_children()
 
+    def get_parent_folder_path(self):
+        if self.path == "/":
+            return None
+        return "/".join(self.path.split("/")[:-1])
+
     def __detect_children(self):
         lst = listdir(self.path)
         folders = [Folder(self.path, folder) for folder in lst if self.isdir(folder)]

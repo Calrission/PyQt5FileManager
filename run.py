@@ -13,7 +13,7 @@ def startTerminalVersion():
         pprint(content)
         obj = input("Введите название объекта: ")
         if obj == "back":
-            tab.move_back_history()
+            tab.move_back_parent()
             continue
         if obj == "next":
             tab.move_next_history()

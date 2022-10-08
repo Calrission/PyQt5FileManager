@@ -13,6 +13,9 @@ class Main(QWidget):
         self.left = None
         self.main = None
 
+        self.next_h = None
+        self.prev_h = None
+
         self.setupWindow()
         self.setupAreas()
         self.initUI()
@@ -30,7 +33,8 @@ class Main(QWidget):
                                   on_add_tab=self.on_add_tab,
                                   on_unselect_tab=self.on_unselect_tab,
                                   on_select_tab=self.on_select_tab,
-                                  on_remove_tab=self.on_remove_tab)
+                                  on_remove_tab=self.on_remove_tab,
+                                  on_change_tab=self.on_change_tab)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
         self.main = MainWindowArea(window=self)
 
@@ -66,9 +70,41 @@ class Main(QWidget):
         print(f"select tab {tab}")
         self.main.set_tab(tab)
 
+    def on_change_tab(self, tab: Tab):
+        self.sync_history_buttons()
+
     def on_unselect_tab(self, tab: Tab):
         print(f"unselect tab {tab}")
+
+    def add_history_buttons(self):
+        self.next_h = QPushButton(">", self)
+        self.next_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
+        self.next_h.move(START_X_BUTTON_HISTORY + WIDTH_HISTORY_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_BUTTON_HISTORY)
+        self.prev_h = QPushButton("<", self)
+        self.prev_h.move(START_X_BUTTON_HISTORY, START_Y_BUTTON_HISTORY)
+        self.prev_h.clicked.connect(self.click_back_history)
+        self.next_h.clicked.connect(self.click_next_history)
+        self.prev_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
+
+    def click_back_history(self):
+        tab = self.tabs.tab_manager.get_select_tab()
+        tab.move_back_parent()
+        self.sync_history_buttons()
+
+    def click_next_history(self):
+        tab = self.tabs.tab_manager.get_select_tab()
+        tab.move_next_history()
+        self.sync_history_buttons()
+
+    def sync_history_buttons(self):
+        select_tab = self.tabs.tab_manager.get_select_tab()
+        can_next = select_tab.can_next()
+        can_prev = select_tab.can_prev()
+        self.next_h.setEnabled(can_next)
+        self.prev_h.setEnabled(can_prev)
 
     def initUI(self):
         self.tabs.tab_manager.add_new_tab("/home/artemii/Загрузки")
         self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.add_history_buttons()
+        self.sync_history_buttons()

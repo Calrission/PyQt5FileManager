@@ -20,7 +20,7 @@ class QPathObject(QWidget):
         text.setAlignment(Qt.AlignHCenter)
         text.setFixedHeight(HEIGHT_TEXT)
         text.setFixedWidth(WIDTH_TEXT)
-        text.setFont(QFont('Arial', 10))
+        text.setFont(QFont('Arial', FONT_SIZE))
         text.setText(self.refactor_text(self.obj.name))
         image.setScaledContents(True)
         image.resize(WIDTH_ICON, HEIGHT_ICON)
@@ -32,7 +32,12 @@ class QPathObject(QWidget):
 
     @staticmethod
     def refactor_text(txt: str):
-        return "\n".join([txt[i * MAX_LINE_TEXT: i * MAX_LINE_TEXT + MAX_LINE_TEXT] for i in range(len(txt) // MAX_LINE_TEXT + 1)])
+        count_lines = len(txt) // MAX_LINE_TEXT
+        lines = [txt[i * MAX_LINE_TEXT: i * MAX_LINE_TEXT + MAX_LINE_TEXT] for i in range(count_lines + 1)]
+        if len(lines) > 3:
+            lines = lines[:3]
+            lines[-1] = lines[-1][:-3] + "..."
+        return "\n".join(lines)
 
 
 class QFile(QPathObject):
