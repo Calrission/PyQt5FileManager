@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import *
 from enum import Enum
 from PathObjects import *
 from Tab import *
-
+from ImageLoaderPixmap import ImageLoaderPixmap
+from QPathObjects import *
 
 class Areas(Enum):
     TabPanel = (START_X_TP, END_X_TP, START_Y_TP, END_Y_TP, WIDTH_TP, HEIGHT_TP)
@@ -148,20 +149,38 @@ class MainWindowArea(WindowArea):
         [[j.deleteLater() for j in i] for i in self.widgets]
         self.widgets = [[]]
 
-    def add_item_path_object(self, item: PathObject):
-        btn = QPushButton(item.name)
-        btn.resize(WIDTH_ITEM, HEIGHT_ITEM)
-        if isinstance(item, Folder):
-            btn.clicked.connect(self.click_folder)
-        elif isinstance(item, File):
-            btn.clicked.connect(item.open_default_app_os)
-        self.add_item(btn)
-        return btn
+    def create_view(self, obj: PathObject):
+        if isinstance(obj, Folder):
+            return QFolder(obj, self.window)
+        elif isinstance(obj, File):
+            return QFile(obj, self.window)
+        else:
+            return QPathObject(obj, self.window)
 
-    def click_folder(self):
-        btn = self.window.sender()
-        folder_name = btn.text()
+    def add_item_path_object(self, item: PathObject):
+        view = self.create_view(item)
+        if isinstance(item, Folder):
+            view.mouseDoubleClickEvent = lambda *args: self.click_folder(view)
+        elif isinstance(item, File):
+            view.mouseDoubleClickEvent = lambda *args: item.open_default_app_os()
+        self.add_item(view)
+        return view
+
+    def click_folder(self, view: QWidget):
+        r, c = self.index(view)
+        index = r * self.max_column + c
+        obj = self._tab.folder.children[index]
+        if not isinstance(obj, Folder):
+            raise ValueError("Click folder to not folder object in MainAreaWindow")
+        folder_name = obj.name
         self._tab.move_to_child_folder(folder_name)
+
+    def index(self, widget: QWidget):
+        for i_r, r in enumerate(self.widgets):
+            for i_c, c in enumerate(r):
+                if c == widget:
+                    return i_r, i_c
+        raise ValueError(f"{widget} not found in MainAreaWindow")
 
     def set_new_content_tab(self):
         self.clear()
