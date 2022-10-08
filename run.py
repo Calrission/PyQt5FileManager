@@ -18,15 +18,18 @@ def startTerminalVersion():
         if obj == "next":
             tab.move_next_history()
             continue
-        path_obj = tab.folder.get_child(obj)
-        if isinstance(path_obj, File):
-            path_obj.open_default_app_os()
-        elif isinstance(path_obj, Folder):
-            tab.move_to_child_folder(path_obj.name)
+        try:
+            path_obj = tab.folder.get_child(obj)
+            if isinstance(path_obj, File):
+                path_obj.open_default_app_os()
+            elif isinstance(path_obj, Folder):
+                tab.move_to_child_folder(path_obj.name)
+        except GetFileFolderError:
+            print("Error")
 
 
 if __name__ == "__main__":
-    if len(argv) > 2 and argv[1] == "-t":
+    if len(argv) >= 2 and argv[1] == "-t":
         startTerminalVersion()
     app = QApplication(argv)
     main = Main()

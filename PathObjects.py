@@ -34,7 +34,10 @@ class PathObject:
             self.type = TypePathObject.UNKNOWN
 
     def _detect_name_from_path(self):
-        pass
+        try:
+            self.name = self.path[::-1][:self.path[::-1].index("/")][::-1]
+        except ValueError:
+            raise DetectNameFromPathError(self)
 
     def check_exist(self):
         return exists(self.path)
@@ -71,9 +74,6 @@ class Folder(PathObject):
         super().refresh()
         self.__check_type()
         self.__detect_children()
-
-    def _detect_name_from_path(self):
-        self.name = self.path[::-1][:self.path[::-1].index("/")][::-1]
 
     def __detect_children(self):
         lst = listdir(self.path)
@@ -139,12 +139,6 @@ class File(PathObject):
     def __check_type(self):
         if self.type != TypePathObject.FILE:
             raise NotFileException(self)
-
-    def _detect_name_from_path(self):
-        try:
-            self.name = self.path[::-1][:self.path[::-1].index("/")][::-1]
-        except ValueError:
-            raise DetectNameFromPathError(self)
 
     def __detect_format(self):
         try:

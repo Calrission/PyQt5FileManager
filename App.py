@@ -15,10 +15,10 @@ class Main(QWidget):
 
         self.setupWindow()
         self.setupAreas()
-        self.initUI()
+        self.initTestMainArea()
 
     def setupWindow(self):
-        self.setGeometry(0, 0, WIDTH, MAX_WIDTH)
+        self.setGeometry(0, 0, WIDTH, HEIGHT)
         self.setWindowTitle(TITLE)
         self.setMinimumWidth(MIN_WIDTH)
         self.setMaximumWidth(MAX_WIDTH)
@@ -26,13 +26,13 @@ class Main(QWidget):
         self.setMinimumHeight(MIN_HEIGHT)
 
     def setupAreas(self):
-        self.tabs = TabWindowArea(window=self, area=Areas.TabPanel,
+        self.tabs = TabWindowArea(window=self,
                                   on_add_tab=self.on_add_tab,
                                   on_unselect_tab=self.on_unselect_tab,
                                   on_select_tab=self.on_select_tab,
                                   on_remove_tab=self.on_remove_tab)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
-        self.main = WindowArea(window=self, area=Areas.MainPanel)
+        self.main = MainWindowArea(window=self)
 
     def initUITestMarkup(self):
         tp = QPushButton("TP")
@@ -49,6 +49,13 @@ class Main(QWidget):
         mp.resize(WIDTH_MP, HEIGHT_MP)
         mp.move(START_X_MP, START_Y_MP)
         self.main.add_widget(mp)
+
+    def initTestMainArea(self):
+        self.initUITestMarkup()
+        lst = [QPushButton(f"{i + 1}") for i in range(90)]
+
+        [i.resize(WIDTH_ITEM, HEIGHT_ITEM) for i in lst]
+        [self.main.add_item(i) for i in lst]
 
     def on_add_tab(self, tab: Tab):
         print(f"add tab {tab}")

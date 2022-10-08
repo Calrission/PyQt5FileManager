@@ -41,13 +41,13 @@ class Tab:
 
     def move_to_child_folder(self, folder_name: str):
         self.folder.next(folder_name)
-        self.refresh_on_change_folder()
+        self._refresh_on_change_folder()
 
     def move_to_folder(self, folder_path: str):
         self.folder.change(folder_path)
-        self.refresh_on_change_folder()
+        self._refresh_on_change_folder()
 
-    def refresh_on_change_folder(self):
+    def _refresh_on_change_folder(self):
         self.selector.change_origin_files(self.folder.children)
         self.history.add(self.folder.path)
 
