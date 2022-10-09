@@ -14,6 +14,7 @@ class Main(QWidget):
         super().__init__()
         self.setMouseTracking(True)
 
+        self.app = None
         self.tabs = None
         self.left = None
         self.main = None
@@ -27,15 +28,6 @@ class Main(QWidget):
         self.setupAreas()
         self.initUI()
 
-    def init_top_widget(self):
-        pass
-        # top_widget.setParent(self)
-        # top_widget.resize(WIDTH, HEIGHT)
-        # top_widget.move(0, 0)
-        # timer = QTimer()
-        # timer.setInterval(100)
-        # timer.timeout.connect(lambda: top_widget.raise_())
-
     def setupWindow(self):
         self.setGeometry(0, 0, WIDTH, HEIGHT)
         self.setWindowTitle(TITLE)
@@ -45,6 +37,7 @@ class Main(QWidget):
         self.setMinimumHeight(MIN_HEIGHT)
 
     def setupAreas(self):
+        self.app = WindowArea(window=self, area=Areas.App)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
         self.main = MainWindowArea(window=self)
         self.tabs = TabWindowArea(window=self,
