@@ -42,6 +42,9 @@ class WindowArea:
         widget.show()
         return widget
 
+    def __str__(self):
+        return self.__class__.__name__
+
 
 class TabWindowArea(WindowArea):
     def __init__(self, window: QWidget,

@@ -1,20 +1,26 @@
+from PyQt5.QtGui import QMoveEvent
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5 import uic
 from ConstValues import *
 from WindowArea import *
 from PathObjects import *
 from Tab import *
+from MouseAreaListener import MouseAreaListener
 
 
 class Main(QWidget):
     def __init__(self):
         super().__init__()
+        self.setMouseTracking(True)
+
         self.tabs = None
         self.left = None
         self.main = None
 
         self.next_h = None
         self.prev_h = None
+
+        self.mouse_listener = None
 
         self.setupWindow()
         self.setupAreas()
@@ -37,6 +43,8 @@ class Main(QWidget):
                                   on_change_tab=self.on_change_tab)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
         self.main = MainWindowArea(window=self)
+
+        self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main])
 
     def initUITestMarkup(self):
         tp = QPushButton("TP")
@@ -108,3 +116,11 @@ class Main(QWidget):
         self.tabs.tab_manager.add_new_tab("/home/artemii")
         self.add_history_buttons()
         self.sync_history_buttons()
+
+    def mouseMoveEvent(self, event):
+        self.mouse_listener.mouseMoveEvent(event)
+
+    def wheelEvent(self, event):
+        angle = event.angleDelta().y()
+        area = self.mouse_listener.get_area_last_detect_mouse()
+        print(f'Прокрутка на {angle} градусов в {area}')
