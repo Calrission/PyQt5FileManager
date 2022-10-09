@@ -88,7 +88,7 @@ class Main(QWidget):
 
     def click_back_history(self):
         tab = self.tabs.tab_manager.get_select_tab()
-        tab.move_back_parent()
+        tab.move_prev_history()
         self.sync_history_buttons()
 
     def click_next_history(self):
@@ -98,8 +98,8 @@ class Main(QWidget):
 
     def sync_history_buttons(self):
         select_tab = self.tabs.tab_manager.get_select_tab()
-        can_next = select_tab.can_next()
-        can_prev = select_tab.can_prev()
+        can_next = select_tab.history.can_next()
+        can_prev = select_tab.history.can_prev()
         self.next_h.setEnabled(can_next)
         self.prev_h.setEnabled(can_prev)
 

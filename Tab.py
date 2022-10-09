@@ -69,20 +69,18 @@ class Tab:
         self.selector.change_origin_files(self.folder.children)
 
     def move_next_history(self):
-        if self.next_path is not None:
-            self.move_to_folder(self.next_path.pop(0))
+        if self.history.can_next():
+            self.move_to_folder(self.history.get_next())
+
+    def move_prev_history(self):
+        if self.history.can_prev():
+            self.move_to_folder(self.history.get_prev())
 
     def open_file(self, file_name: str):
         self.folder.get_file(file_name).open_default_app_os()
 
     def __str__(self):
         return self.folder.path
-
-    def can_next(self):
-        return len(self.next_path) != 0
-
-    def can_prev(self):
-        return self.folder.path != "/"
 
 
 class TabManager:
