@@ -32,6 +32,7 @@ class WindowArea:
                                 start_x=area.value[0], end_x=area.value[1],
                                 start_y=area.value[2], end_y=area.value[3],
                                 width=area.value[4], height=area.value[5])
+        self.children: list[QWidget] = []
 
     def add_widget(self, widget: QWidget, x: int = None, y: int = None):
         x = widget.x() if x is None else x
@@ -40,7 +41,43 @@ class WindowArea:
         widget.setParent(self.window)
         widget.move(x, y)
         widget.show()
+
+        self.children.append(widget)
+
         return widget
+
+    def get_bottom_widget(self):
+        max_y = -1
+        bottom_widget = None
+        for widget in self.children:
+            if widget.y() > max_y:
+                bottom_widget = widget
+                max_y = widget.y()
+        return bottom_widget
+
+    def get_top_widget(self):
+        min_y = HEIGHT + 1
+        top_widget = None
+        for widget in self.children:
+            if widget.y() < min_y:
+                top_widget = widget
+                min_y = widget.y()
+        return top_widget
+
+    def get_need_wheel_down(self):
+        return self.get_bottom_widget().y() > HEIGHT
+
+    def get_need_wheel_top(self):
+        return self.get_top_widget().y() < self.start_y
+
+    def delta_change_y_children(self, delta_y: int):
+        for widget in self.children:
+            widget.move(widget.x(), widget.y() + delta_y)
+
+    def deleteLaterWidget(self, widget: QWidget):
+        widget.deleteLater()
+        if widget in self.children:
+            self.children.remove(widget)
 
     def __str__(self):
         return self.__class__.__name__
@@ -107,7 +144,7 @@ class TabWindowArea(WindowArea):
 
     def _on_remove(self, tab: Tab):
         view = self._tabs[self.tab_manager.index(tab)]
-        view.deleteLater()
+        self.deleteLaterWidget(view)
         self.on_remove_tab(tab)
 
     def _on_change(self, tab: Tab):
@@ -153,7 +190,7 @@ class MainWindowArea(WindowArea):
         [self.add_item(item) for item in data]
 
     def clear(self):
-        [[j.deleteLater() for j in i] for i in self.widgets]
+        [[self.deleteLaterWidget(j) for j in i] for i in self.widgets]
         self.widgets = [[]]
 
     def create_view(self, obj: PathObject):

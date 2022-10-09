@@ -123,4 +123,8 @@ class Main(QWidget):
     def wheelEvent(self, event):
         angle = event.angleDelta().y()
         area = self.mouse_listener.get_area_last_detect_mouse()
-        print(f'Прокрутка на {angle} градусов в {area}')
+        if isinstance(area, MainWindowArea):
+            px_y = int(angle * ANGLE_WHEEL_TO_PX)
+            if (angle < 0 and area.get_need_wheel_down()) or (angle > 0 and area.get_need_wheel_top()):
+                print(f"Прокрутка контента по вертикали на {px_y}")
+                area.delta_change_y_children(px_y)
