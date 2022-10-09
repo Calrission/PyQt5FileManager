@@ -40,7 +40,7 @@ class Tab:
         self.selector = FileSelector(self.folder.children)
         self.on_select_file = func_for_select
         self._on_change_folder = []
-        self.history = HistoryTab([now_path])
+        self.history = HistoryTab([self.folder.path])
 
     def move_to_child_folder(self, folder_name: str):
         self.folder.next(folder_name)
