@@ -8,9 +8,9 @@ from QPathObjects import *
 
 
 class Areas(Enum):
-    TabPanel = (START_X_TP, END_X_TP, START_Y_TP, END_Y_TP, WIDTH_TP, HEIGHT_TP)
-    MainPanel = (START_X_MP, END_X_MP, START_Y_MP, END_Y_MP, WIDTH_MP, HEIGHT_MP)
-    LeftPanel = (START_X_LP, END_X_LP, START_Y_LP, END_Y_LP, WIDTH_LP, HEIGHT_LP)
+    TabPanel = (START_X_TP, END_X_TP, START_Y_TP, END_Y_TP, WIDTH_TP, HEIGHT_TP, COLOR_BACKGROUND_TOP_RGB)
+    MainPanel = (START_X_MP, END_X_MP, START_Y_MP, END_Y_MP, WIDTH_MP, HEIGHT_MP, COLOR_BACKGROUND_MAIN_RGB)
+    LeftPanel = (START_X_LP, END_X_LP, START_Y_LP, END_Y_LP, WIDTH_LP, HEIGHT_LP, COLOR_BACKGROUND_LEFT_RGB)
 
 
 class WindowArea:
@@ -18,6 +18,7 @@ class WindowArea:
                  start_x: int = None, end_x: int = None,
                  start_y: int = None, end_y: int = None,
                  width: int = None, height: int = None,
+                 color_background: tuple = COLOR_BACKGROUND_DEFAULT,
                  area: Areas = None):
         if area is None:
             self.end_y = end_y
@@ -27,23 +28,37 @@ class WindowArea:
             self.width = width
             self.height = height
             self.window = window
+            self.color_background = color_background
         else:
             WindowArea.__init__(self, window=window,
                                 start_x=area.value[0], end_x=area.value[1],
                                 start_y=area.value[2], end_y=area.value[3],
-                                width=area.value[4], height=area.value[5])
+                                width=area.value[4], height=area.value[5],
+                                color_background=area.value[6])
+
         self.children: list[QWidget] = []
 
+        self.background = QLabel()
+        self.background.resize(self.width, self.height)
+        self._add_widget(self.background, self.start_x, self.start_y)
+        self.set_color_background_rgb(self.color_background)
+
     def add_widget(self, widget: QWidget, x: int = None, y: int = None):
+        widget = self._add_widget(widget, x, y)
+        self.children.append(widget)
+        return widget
+
+    def raise_(self):
+        self.background.raise_()
+        [i.raise_() for i in self.children]
+
+    def _add_widget(self, widget: QWidget, x: int = None, y: int = None):
         x = widget.x() if x is None else x
         y = widget.y() if y is None else y
-
+        widget.setMouseTracking(True)
         widget.setParent(self.window)
         widget.move(x, y)
         widget.show()
-
-        self.children.append(widget)
-
         return widget
 
     def get_bottom_widget(self):
@@ -65,10 +80,12 @@ class WindowArea:
         return top_widget
 
     def get_need_wheel_down(self):
-        return self.get_bottom_widget().y() > HEIGHT
+        bottom_widget = self.get_bottom_widget()
+        return bottom_widget.y() + bottom_widget.height() > HEIGHT
 
     def get_need_wheel_top(self):
-        return self.get_top_widget().y() < self.start_y
+        top_widget = self.get_top_widget()
+        return top_widget.y() < self.start_y
 
     def delta_change_y_children(self, delta_y: int):
         for widget in self.children:
@@ -82,16 +99,16 @@ class WindowArea:
     def __str__(self):
         return self.__class__.__name__
 
+    def set_color_background_rgb(self, color: tuple):
+        ImageLoaderPixmap.set_background_color_label(self.background, color)
+
 
 class TabWindowArea(WindowArea):
     def __init__(self, window: QWidget,
                  on_add_tab, on_select_tab,
                  on_remove_tab, on_unselect_tab,
-                 on_change_tab,
-                 start_x: int = None, end_x: int = None,
-                 start_y: int = None, end_y: int = None,
-                 width: int = None, height: int = None):
-        super().__init__(window, start_x, end_x, start_y, end_y, width, height, Areas.TabPanel)
+                 on_change_tab,):
+        super().__init__(window, area=Areas.TabPanel)
 
         self.on_remove_tab = on_remove_tab
         self.on_add_tab = on_add_tab
@@ -111,7 +128,8 @@ class TabWindowArea(WindowArea):
     def generate_view_tab(self, tab: Tab):
         btn = self.add_widget(QPushButton(tab.name))
         new_x = self._calc_new_x()
-        btn.move(new_x, self.start_y)
+        btn.resize(btn.width(), HEIGHT_TAB_TP)
+        btn.move(new_x, self.start_y + MARGIN_TAB_V_TP)
         btn.clicked.connect(self._click_tab)
         btn.show()
         return btn
@@ -158,11 +176,8 @@ class TabWindowArea(WindowArea):
 
 class MainWindowArea(WindowArea):
 
-    def __init__(self, window: QWidget,
-                 start_x: int = None, end_x: int = None,
-                 start_y: int = None, end_y: int = None,
-                 width: int = None, height: int = None):
-        super().__init__(window, start_x, end_x, start_y, end_y, width, height, Areas.MainPanel)
+    def __init__(self, window: QWidget):
+        super().__init__(window, area=Areas.MainPanel)
 
         self.widgets = [[]]
         self.max_column = self.width // (WIDTH_ITEM + MARGIN_ITEM)

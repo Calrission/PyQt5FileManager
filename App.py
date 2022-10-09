@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QMoveEvent
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5 import uic
@@ -26,6 +27,15 @@ class Main(QWidget):
         self.setupAreas()
         self.initUI()
 
+    def init_top_widget(self):
+        pass
+        # top_widget.setParent(self)
+        # top_widget.resize(WIDTH, HEIGHT)
+        # top_widget.move(0, 0)
+        # timer = QTimer()
+        # timer.setInterval(100)
+        # timer.timeout.connect(lambda: top_widget.raise_())
+
     def setupWindow(self):
         self.setGeometry(0, 0, WIDTH, HEIGHT)
         self.setWindowTitle(TITLE)
@@ -35,14 +45,14 @@ class Main(QWidget):
         self.setMinimumHeight(MIN_HEIGHT)
 
     def setupAreas(self):
+        self.left = WindowArea(window=self, area=Areas.LeftPanel)
+        self.main = MainWindowArea(window=self)
         self.tabs = TabWindowArea(window=self,
                                   on_add_tab=self.on_add_tab,
                                   on_unselect_tab=self.on_unselect_tab,
                                   on_select_tab=self.on_select_tab,
                                   on_remove_tab=self.on_remove_tab,
                                   on_change_tab=self.on_change_tab)
-        self.left = WindowArea(window=self, area=Areas.LeftPanel)
-        self.main = MainWindowArea(window=self)
 
         self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main])
 
@@ -128,3 +138,4 @@ class Main(QWidget):
             if (angle < 0 and area.get_need_wheel_down()) or (angle > 0 and area.get_need_wheel_top()):
                 print(f"Прокрутка контента по вертикали на {px_y}")
                 area.delta_change_y_children(px_y)
+                self.tabs.raise_()
