@@ -48,7 +48,6 @@ HEIGHT_LP = END_Y_LP - START_Y_LP
 WIDTH_MP = END_X_MP - START_X_MP
 HEIGHT_MP = END_Y_MP - START_Y_MP
 
-
 WIDTH_ITEM = 93
 HEIGHT_ITEM = 95
 MARGIN_ITEM = 10
@@ -68,3 +67,24 @@ COLOR_BACKGROUND_LEFT_RGB = (16, 16, 16)
 COLOR_BACKGROUND_MAIN_RGB = (0, 0, 0)
 
 COLOR_TEXT = (255, 255, 255)
+
+TXT_FORMATS = ["txt", "csv"]
+VIDEO_FORMATS = ["mp4"]
+ARCHIVE_FORMATS = ["zip"]
+PYTHON_FORMATS = ["py"]
+WORD_FORMATS = ["docx", "doc"]
+TORRENT_FORMATS = ["torrent"]
+AUDIO_FORMATS = ["mp3"]
+PYTHON_BYTECODE_FORMATS = ["pyc"]
+IMAGE_FORMATS = ["png", "jpeg", "jpg", "bmp"]
+EXCEL_FORMATS = ["xlsx", "xlsm", "xltx", "xlt",
+                 "xlsb", "xlam", "xltm", "xla"
+                                         "xls"]
+PDF_FORMATS = ["pdf", "psd", "psb"]
+PHOTOSHOP = []
+JAVA_FORMATS = ["java"]
+JAR_FORMATS = ["jar"]
+POWERPOINT_FORMATS = ["ppxt", "pptm", "ppt", "potx",
+                      "pot", "potm"]
+QT_UI_FORMATS = ["ui"]
+APK_FORMATS = ["apk"]
