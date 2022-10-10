@@ -1,6 +1,6 @@
 from platform import system
 
-MAX_WIDTH = 800
+MAX_WIDTH = 900
 MAX_HEIGHT = 600
 MIN_WIDTH = MAX_WIDTH
 MIN_HEIGHT = MAX_HEIGHT
@@ -28,7 +28,7 @@ START_Y_MP = END_Y_TP
 START_Y_LP = END_Y_TP
 END_Y_LP = HEIGHT
 START_X_LP = 0
-END_X_LP = 180
+END_X_LP = 250
 START_X_MP = END_X_LP
 END_X_MP = WIDTH
 
@@ -63,7 +63,7 @@ HEIGHT_MP = END_Y_MP - START_Y_MP
 
 WIDTH_ITEM = 93
 HEIGHT_ITEM = 95
-MARGIN_ITEM = 10
+MARGIN_ITEM = 8
 WIDTH_ICON = 50
 HEIGHT_ICON = WIDTH_ICON
 WIDTH_TEXT = WIDTH_ITEM
@@ -106,10 +106,11 @@ APK_FORMATS = ["apk"]
 SLASH_WINDOWS = "\\"
 SLASH_LINUX = "/"
 
+OS = system()
+
 
 def SLASH():
-    os = system()
-    if os == "Windows":
+    if OS == "Windows":
         return SLASH_WINDOWS
     else:
         # SLASH_LINUX == SLASH_MAC_OS

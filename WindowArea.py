@@ -197,7 +197,7 @@ class MainWindowArea(WindowArea):
 
         self._tab = None
 
-    def _get_x_y_last_item(self):
+    def _get_x_y_new_last_item(self):
         last_row = self.widgets[-1]
         y = (len(self.widgets) - 1) * (HEIGHT_ITEM + MARGIN_ITEM) + MARGIN_ITEM + self.start_y
         x = (len(last_row) - 1) * (WIDTH_ITEM + MARGIN_ITEM) + MARGIN_ITEM + self.start_x
@@ -210,7 +210,7 @@ class MainWindowArea(WindowArea):
 
     def add_item(self, widget: QWidget):
         self._insert_new_widget(widget)
-        x, y = self._get_x_y_last_item()
+        x, y = self._get_x_y_new_last_item()
         self.add_widget(widget, x, y)
 
     def add_items(self, data: list):
