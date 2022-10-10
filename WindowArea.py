@@ -124,52 +124,57 @@ class TabWindowArea(WindowArea):
             on_add_tab=self._on_add,
             on_select_tab=self._on_select,
             on_unselect_tab=self._on_unselect,
-            on_change_tab=self._on_change
+            on_change_tab=self._on_change_folder
         )
-        self._tabs: list[QWidget] = []
 
     def generate_view_tab(self, tab: Tab):
-        btn = self.add_widget(QPushButton(tab.name))
+        qtab = QTab(self.window, tab)
         new_x = self._calc_new_x()
-        btn.resize(btn.width(), HEIGHT_TAB_TP)
-        btn.move(new_x, self.start_y + MARGIN_TAB_V_TP)
-        btn.clicked.connect(self._click_tab)
-        btn.show()
-        return btn
+        qtab.move(new_x, self.start_y + MARGIN_TAB_V_TP)
+        qtab.mousePressEvent = lambda x: self._click_tab(qtab)
+        qtab.show()
+        return qtab
 
-    def _click_tab(self):
-        view = self.window.sender()
-        index = self._tabs.index(view)
+    def _click_tab(self, view):
+        index = self.children.index(view)
         tab = self.tab_manager.get(index)
         self.tab_manager.select_tab(tab)
 
     def _on_add(self, tab: Tab):
         view = self.generate_view_tab(tab)
-        self._tabs.append(view)
+        self.children.append(view)
         self.on_add_tab(tab)
 
     def _calc_new_x(self):
-        return self.start_x + sum([i.width() for i in self._tabs]) + 5 * (len(self._tabs) + 1)
+        return self.start_x + sum([i.width() for i in self.children]) + MARGIN_TAB_H_TP * (len(self.children) + 1)
 
     def _on_select(self, tab: Tab):
-        view = self._tabs[self.tab_manager.index(tab)]
-        if isinstance(view, QPushButton):
+        view = self.children[self.tab_manager.index(tab)]
+        if isinstance(view, QTab):
             view.setText("*" + view.text())
         self.on_select_tab(tab)
+        self._recalc_coord_children()
 
     def _on_unselect(self, tab: Tab):
-        view = self._tabs[self.tab_manager.index(tab)]
-        if isinstance(view, QPushButton):
+        view = self.children[self.tab_manager.index(tab)]
+        if isinstance(view, QTab):
             view.setText(view.text().replace("*", ""))
         self.on_unselect_tab(tab)
 
     def _on_remove(self, tab: Tab):
-        view = self._tabs[self.tab_manager.index(tab)]
+        view = self.children[self.tab_manager.index(tab)]
         self.deleteLaterWidget(view)
         self.on_remove_tab(tab)
 
-    def _on_change(self, tab: Tab):
-        view = self._tabs[self.tab_manager.index(tab)]
+    def _recalc_coord_children(self):
+        item_x = self.start_x + MARGIN_TAB_H_TP
+        for item in self.children:
+            if isinstance(item, QWidget):
+                item.move(item_x, item.y())
+                item_x += item.width() + MARGIN_TAB_H_TP
+
+    def _on_change_folder(self, tab: Tab):
+        view = self.children[self.tab_manager.index(tab)]
         if isinstance(view, QPushButton):
             view.setText(tab.name)
             if self.tab_manager.is_select_tab(tab):

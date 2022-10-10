@@ -1,3 +1,8 @@
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget, QLabel
+from ConstValues import *
 from HistoryTab import HistoryTab
 from PathObjects import *
 
@@ -149,3 +154,43 @@ class TabManager:
 
     def index(self, tab: Tab):
         return self._tabs.index(tab)
+
+
+class QTab(QWidget):
+    def __init__(self, parent, tab: Tab):
+        super().__init__(parent=parent)
+        self.tab = tab
+
+        self._image = QLabel(self)
+        self._text_view = QLabel(self)
+
+        self._setupText()
+
+        self.resize(self.width(), HEIGHT_TAB_TP)
+
+        self._reset_pixmap_background_tab()
+
+        self.setText(tab.name)
+
+    def _setupText(self):
+        self._text_view.setAlignment(Qt.AlignVCenter)
+        values = ", ".join([str(i) for i in COLOR_TEXT])
+        self._text_view.setStyleSheet("QLabel { color: rgb(" + values + "); }")
+
+    def _reset_pixmap_background_tab(self):
+        pixmap = QPixmap("files/back_tab.png")
+        pixmap = pixmap.scaled(self.width(), self.height())
+        self._image.resize(self.width(), self.height())
+        self._image.setPixmap(pixmap)
+
+    def setText(self, text: str):
+        self._text_view.setText(text)
+        self._text_view.show()
+        self._text_view.adjustSize()
+        self._text_view.resize(self._text_view.width(), self.height())
+        self._text_view.move(PADDING_TAB, self._text_view.y())
+        self.resize(self._text_view.width() + 2 * PADDING_TAB, self.height())
+        self._reset_pixmap_background_tab()
+
+    def text(self):
+        return self._text_view.text()
