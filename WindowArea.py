@@ -11,7 +11,9 @@ class Areas(Enum):
     TabPanel = (START_X_TP, END_X_TP, START_Y_TP, END_Y_TP, WIDTH_TP, HEIGHT_TP, COLOR_BACKGROUND_TOP_RGB)
     MainPanel = (START_X_MP, END_X_MP, START_Y_MP, END_Y_MP, WIDTH_MP, HEIGHT_MP, COLOR_BACKGROUND_MAIN_RGB)
     LeftPanel = (START_X_LP, END_X_LP, START_Y_LP, END_Y_LP, WIDTH_LP, HEIGHT_LP, COLOR_BACKGROUND_LEFT_RGB)
-    App = (0, WIDTH - 1, 0, HEIGHT - 1, WIDTH, HEIGHT, COLOR_BACKGROUND_TOP_RGB)
+    HistoryButtonsPanel = (START_X_PANEL_HISTORY, END_X_PANEL_HISTORY, START_Y_PANEL_HISTORY, END_Y_PANEL_HISTORY,
+                           WIDTH_PANEL_HISTORY, HEIGHT_PANEL_HISTORY, COLOR_BACKGROUND_TOP_RGB)
+    App = (0, WIDTH - 1, 0, HEIGHT - 1, WIDTH, HEIGHT, COLOR_BACKGROUND_DEFAULT)
 
 
 class WindowArea:
@@ -250,3 +252,20 @@ class MainWindowArea(WindowArea):
         self._tab = tab
         self._tab.add_on_change_folder(lambda x: self.set_new_content_tab())
         self.set_new_content_tab()
+
+
+class HistoryButtonsArea(WindowArea):
+    def __init__(self, window: QWidget, click_back_history, click_next_history):
+        super().__init__(window, area=Areas.HistoryButtonsPanel)
+
+        self.click_next_history = click_next_history
+        self.click_back_history = click_back_history
+
+        self.next_h = QPushButton(">", self.window)
+        self.next_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
+        self.next_h.move(START_X_HISTORY_BUTTON + WIDTH_HISTORY_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_HISTORY_BUTTON)
+        self.prev_h = QPushButton("<", self.window)
+        self.prev_h.move(START_X_HISTORY_BUTTON, START_Y_HISTORY_BUTTON)
+        self.prev_h.clicked.connect(self.click_back_history)
+        self.next_h.clicked.connect(self.click_next_history)
+        self.prev_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)

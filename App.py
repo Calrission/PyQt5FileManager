@@ -18,6 +18,7 @@ class Main(QWidget):
         self.tabs = None
         self.left = None
         self.main = None
+        self.history_buttons = None
 
         self.next_h = None
         self.prev_h = None
@@ -46,6 +47,9 @@ class Main(QWidget):
                                   on_select_tab=self.on_select_tab,
                                   on_remove_tab=self.on_remove_tab,
                                   on_change_tab=self.on_change_tab)
+        self.history_buttons = HistoryButtonsArea(window=self,
+                                                  click_back_history=self.click_back_history,
+                                                  click_next_history=self.click_next_history)
 
         self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main])
 
@@ -87,16 +91,6 @@ class Main(QWidget):
     def on_unselect_tab(self, tab: Tab):
         print(f"unselect tab {tab}")
 
-    def add_history_buttons(self):
-        self.next_h = QPushButton(">", self)
-        self.next_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
-        self.next_h.move(START_X_BUTTON_HISTORY + WIDTH_HISTORY_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_BUTTON_HISTORY)
-        self.prev_h = QPushButton("<", self)
-        self.prev_h.move(START_X_BUTTON_HISTORY, START_Y_BUTTON_HISTORY)
-        self.prev_h.clicked.connect(self.click_back_history)
-        self.next_h.clicked.connect(self.click_next_history)
-        self.prev_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
-
     def click_back_history(self):
         tab = self.tabs.tab_manager.get_select_tab()
         tab.move_prev_history()
@@ -111,13 +105,12 @@ class Main(QWidget):
         select_tab = self.tabs.tab_manager.get_select_tab()
         can_next = select_tab.history.can_next()
         can_prev = select_tab.history.can_prev()
-        self.next_h.setEnabled(can_next)
-        self.prev_h.setEnabled(can_prev)
+        self.history_buttons.next_h.setEnabled(can_next)
+        self.history_buttons.prev_h.setEnabled(can_prev)
 
     def initUI(self):
         self.tabs.tab_manager.add_new_tab("/home/artemii/Загрузки")
         self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.add_history_buttons()
         self.sync_history_buttons()
 
     def mouseMoveEvent(self, event):

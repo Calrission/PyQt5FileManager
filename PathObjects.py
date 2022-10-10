@@ -5,7 +5,6 @@ from os import listdir
 from platform import system
 from Exceptions import *
 from enum import Enum
-from TypeFiles import TypeFile
 
 
 class TypePathObject(Enum):
