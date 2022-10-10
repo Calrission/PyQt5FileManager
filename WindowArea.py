@@ -151,14 +151,14 @@ class TabWindowArea(WindowArea):
     def _on_select(self, tab: Tab):
         view = self.children[self.tab_manager.index(tab)]
         if isinstance(view, QTab):
-            view.setText("*" + view.text())
+            view.set_select(True)
         self.on_select_tab(tab)
         self._recalc_coord_children()
 
     def _on_unselect(self, tab: Tab):
         view = self.children[self.tab_manager.index(tab)]
         if isinstance(view, QTab):
-            view.setText(view.text().replace("*", ""))
+            view.set_select(False)
         self.on_unselect_tab(tab)
 
     def _on_remove(self, tab: Tab):

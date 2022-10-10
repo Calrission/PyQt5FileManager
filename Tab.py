@@ -161,6 +161,10 @@ class QTab(QWidget):
         super().__init__(parent=parent)
         self.tab = tab
 
+        self.backgrounds = ["files/back_tab.png", "files/back_tag_select.png"]
+
+        self.is_select = False
+
         self._image = QLabel(self)
         self._text_view = QLabel(self)
 
@@ -172,13 +176,17 @@ class QTab(QWidget):
 
         self.setText(tab.name)
 
+    def set_select(self, is_select):
+        self.is_select = is_select
+        self._reset_pixmap_background_tab()
+
     def _setupText(self):
         self._text_view.setAlignment(Qt.AlignVCenter)
         values = ", ".join([str(i) for i in COLOR_TEXT])
         self._text_view.setStyleSheet("QLabel { color: rgb(" + values + "); }")
 
     def _reset_pixmap_background_tab(self):
-        pixmap = QPixmap("files/back_tab.png")
+        pixmap = QPixmap(self.backgrounds[int(self.is_select)])
         pixmap = pixmap.scaled(self.width(), self.height())
         self._image.resize(self.width(), self.height())
         self._image.setPixmap(pixmap)
