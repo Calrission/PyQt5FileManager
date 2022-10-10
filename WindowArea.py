@@ -5,6 +5,7 @@ from PathObjects import *
 from Tab import *
 from UtilsVisual import UtilsVisual
 from QPathObjects import *
+from QHistoryButton import *
 
 
 class Areas(Enum):
@@ -272,11 +273,9 @@ class HistoryButtonsArea(WindowArea):
         self.click_next_history = click_next_history
         self.click_back_history = click_back_history
 
-        self.next_h = QPushButton(">", self.window)
-        self.next_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
+        self.next_h = QHistoryButton(self.window, TypeHistoryButton.RIGHT)
         self.next_h.move(START_X_HISTORY_BUTTON + WIDTH_HISTORY_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_HISTORY_BUTTON)
-        self.prev_h = QPushButton("<", self.window)
+        self.prev_h = QHistoryButton(self.window, TypeHistoryButton.LEFT)
         self.prev_h.move(START_X_HISTORY_BUTTON, START_Y_HISTORY_BUTTON)
-        self.prev_h.clicked.connect(self.click_back_history)
-        self.next_h.clicked.connect(self.click_next_history)
-        self.prev_h.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
+        self.prev_h.set_click(self.click_back_history)
+        self.next_h.set_click(self.click_next_history)

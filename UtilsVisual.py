@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QColor
+from PyQt5 import QtSvg
 
 
 class UtilsVisual:
@@ -19,3 +20,9 @@ class UtilsVisual:
         pixmap = QPixmap(file_path)
         pixmap = pixmap.scaled(*scaled)
         label.setPixmap(pixmap)
+
+    @staticmethod
+    def load_file_image_svg(file: str, w: int, h: int):
+        svg = QtSvg.QSvgWidget(file)
+        svg.setGeometry(0, 0, w, h)
+        return svg
