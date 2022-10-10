@@ -5,12 +5,12 @@ from PyQt5.QtWidgets import QApplication
 from App import Main
 from sys import argv, exit
 from platform import system
-from ConstValues import OS, initSLASH
 
 
 def startTerminalVersion():
     tab = Tab("")
     while True:
+
         content = [str(i) for i in tab.folder.children]
         pprint(content)
         obj = input("Введите название объекта: ")
@@ -31,8 +31,6 @@ def startTerminalVersion():
 
 
 if __name__ == "__main__":
-    OS = system()
-    initSLASH()
     if len(argv) >= 2 and argv[1] == "-t":
         startTerminalVersion()
     app = QApplication(argv)

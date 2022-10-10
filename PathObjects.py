@@ -5,7 +5,7 @@ from os import listdir
 from platform import system
 from Exceptions import *
 from enum import Enum
-from ConstValues import SLASH, OS
+from ConstValues import SLASH
 
 
 class TypePathObject(Enum):

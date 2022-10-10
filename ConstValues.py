@@ -1,3 +1,5 @@
+from platform import system
+
 MAX_WIDTH = 800
 MAX_HEIGHT = 600
 MIN_WIDTH = MAX_WIDTH
@@ -101,17 +103,17 @@ POWERPOINT_FORMATS = ["ppxt", "pptm", "ppt", "potx",
 QT_UI_FORMATS = ["ui"]
 APK_FORMATS = ["apk"]
 
-OS = "unknown"
-
 SLASH_WINDOWS = "\\"
 SLASH_LINUX = "/"
-SLASH = ""
 
 
-def initSLASH():
-    global SLASH
-    if OS != "Darwin":
-        if OS == "Windows":
-            SLASH = SLASH_WINDOWS
-        else:
-            SLASH = SLASH_LINUX
+def SLASH():
+    os = system()
+    if os == "Windows":
+        return SLASH_WINDOWS
+    else:
+        # SLASH_LINUX == SLASH_MAC_OS
+        return SLASH_LINUX
+
+
+SLASH = SLASH()
