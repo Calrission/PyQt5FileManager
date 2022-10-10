@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from enum import Enum
 from PathObjects import *
 from Tab import *
-from ImageLoaderPixmap import ImageLoaderPixmap
+from UtilsVisual import UtilsVisual
 from QPathObjects import *
 
 
@@ -103,7 +103,7 @@ class WindowArea:
         return self.__class__.__name__
 
     def set_color_background_rgb(self, color: tuple):
-        ImageLoaderPixmap.set_background_color_label(self.background, color)
+        UtilsVisual.set_background_color_label(self.background, color)
 
 
 class TabWindowArea(WindowArea):
@@ -175,11 +175,10 @@ class TabWindowArea(WindowArea):
 
     def _on_change_folder(self, tab: Tab):
         view = self.children[self.tab_manager.index(tab)]
-        if isinstance(view, QPushButton):
+        if isinstance(view, QTab):
             view.setText(tab.name)
-            if self.tab_manager.is_select_tab(tab):
-                view.setText("*" + view.text())
         self.on_change_tab(tab)
+        self._recalc_coord_children()
 
 
 class MainWindowArea(WindowArea):
@@ -257,6 +256,9 @@ class MainWindowArea(WindowArea):
         self._tab = tab
         self._tab.add_on_change_folder(lambda x: self.set_new_content_tab())
         self.set_new_content_tab()
+
+    def get_tab(self):
+        return self._tab
 
 
 class HistoryButtonsArea(WindowArea):

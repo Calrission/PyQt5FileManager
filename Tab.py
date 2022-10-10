@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from ConstValues import *
 from HistoryTab import HistoryTab
 from PathObjects import *
+from UtilsVisual import UtilsVisual
 
 
 class FileSelector:
@@ -169,12 +170,11 @@ class QTab(QWidget):
         self._text_view = QLabel(self)
 
         self._setupText()
+        self.setText(tab.name)
 
         self.resize(self.width(), HEIGHT_TAB_TP)
 
         self._reset_pixmap_background_tab()
-
-        self.setText(tab.name)
 
     def set_select(self, is_select):
         self.is_select = is_select
@@ -186,10 +186,9 @@ class QTab(QWidget):
         self._text_view.setStyleSheet("QLabel { color: rgb(" + values + "); }")
 
     def _reset_pixmap_background_tab(self):
-        pixmap = QPixmap(self.backgrounds[int(self.is_select)])
-        pixmap = pixmap.scaled(self.width(), self.height())
+        UtilsVisual.load_file_to_label_with_scaled(self.backgrounds[int(self.is_select)], self._image,
+                                                   (self.width(), self.height()))
         self._image.resize(self.width(), self.height())
-        self._image.setPixmap(pixmap)
 
     def setText(self, text: str):
         self._text_view.setText(text)

@@ -84,6 +84,7 @@ class Main(QWidget):
     def on_select_tab(self, tab: Tab):
         print(f"select tab {tab}")
         self.main.set_tab(tab)
+        self.sync_history_buttons()
 
     def on_change_tab(self, tab: Tab):
         self.sync_history_buttons()

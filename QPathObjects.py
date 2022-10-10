@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PathObjects import *
 from ConstValues import *
 from PyQt5.QtCore import Qt
-from ImageLoaderPixmap import *
+from UtilsVisual import *
 from PyQt5.QtGui import QFont
 
 
@@ -35,7 +35,7 @@ class QPathObject(QWidget):
         self._initIcon()
 
     def _initIcon(self):
-        ImageLoaderPixmap.load_file_to_label(self.icon, self.image)
+        UtilsVisual.load_file_to_label(self.icon, self.image)
 
     @staticmethod
     def refactor_text(txt: str):
