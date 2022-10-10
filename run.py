@@ -4,6 +4,8 @@ from pprint import pprint
 from PyQt5.QtWidgets import QApplication
 from App import Main
 from sys import argv, exit
+from platform import system
+from ConstValues import OS, initSLASH
 
 
 def startTerminalVersion():
@@ -29,6 +31,8 @@ def startTerminalVersion():
 
 
 if __name__ == "__main__":
+    OS = system()
+    initSLASH()
     if len(argv) >= 2 and argv[1] == "-t":
         startTerminalVersion()
     app = QApplication(argv)

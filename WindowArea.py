@@ -94,6 +94,10 @@ class WindowArea:
         for widget in self.children:
             widget.move(widget.x(), widget.y() + delta_y)
 
+    def delta_change_x_children(self, delta_x: int):
+        for widget in self.children:
+            widget.move(widget.x() + delta_x, widget.y())
+
     def deleteLaterWidget(self, widget: QWidget):
         widget.deleteLater()
         if widget in self.children:

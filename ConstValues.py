@@ -100,3 +100,18 @@ POWERPOINT_FORMATS = ["ppxt", "pptm", "ppt", "potx",
                       "pot", "potm"]
 QT_UI_FORMATS = ["ui"]
 APK_FORMATS = ["apk"]
+
+OS = "unknown"
+
+SLASH_WINDOWS = "\\"
+SLASH_LINUX = "/"
+SLASH = ""
+
+
+def initSLASH():
+    global SLASH
+    if OS != "Darwin":
+        if OS == "Windows":
+            SLASH = SLASH_WINDOWS
+        else:
+            SLASH = SLASH_LINUX
