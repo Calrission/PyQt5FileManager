@@ -76,13 +76,12 @@ class Main(QWidget):
         [self.main.add_item(i) for i in lst]
 
     def on_add_tab(self, tab: Tab):
-        print(f"add tab {tab}")
+        pass
 
     def on_remove_tab(self, tab: Tab):
-        print(f"remove tab {tab}")
+        pass
 
     def on_select_tab(self, tab: Tab):
-        print(f"select tab {tab}")
         self.main.set_tab(tab)
         self.sync_history_buttons()
 
@@ -90,7 +89,7 @@ class Main(QWidget):
         self.sync_history_buttons()
 
     def on_unselect_tab(self, tab: Tab):
-        print(f"unselect tab {tab}")
+        pass
 
     def click_back_history(self):
         tab = self.tabs.tab_manager.get_select_tab()
@@ -112,6 +111,19 @@ class Main(QWidget):
     def initUI(self):
         self.tabs.tab_manager.add_new_tab("/home/artemii/Загрузки")
         self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab("/home/artemii")
         self.sync_history_buttons()
 
     def mouseMoveEvent(self, event):
@@ -126,3 +138,10 @@ class Main(QWidget):
                 print(f"Прокрутка контента по вертикали на {px_y}")
                 area.delta_change_y_children(px_y)
                 self.tabs.raise_()
+                self.history_buttons.raise_()
+        elif isinstance(area, TabWindowArea):
+            px_x = int(angle * ANGLE_WHEEL_TO_PX)
+            if (angle < 0 and area.get_need_wheel_right()) or (angle > 0 and area.get_need_wheel_left()):
+                print(f"Прокрутка контента по горизонтали на {px_x}")
+                area.delta_change_x_children(px_x)
+                self.history_buttons.raise_()

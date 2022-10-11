@@ -10,7 +10,6 @@ from platform import system
 def startTerminalVersion():
     tab = Tab("")
     while True:
-
         content = [str(i) for i in tab.folder.children]
         pprint(content)
         obj = input("Введите название объекта: ")

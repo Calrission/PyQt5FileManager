@@ -42,6 +42,9 @@ class WindowArea:
 
         self.children: list[QWidget] = []
 
+        self._delta_wheel_x = 0
+        self._delta_wheel_y = 0
+
         self.background = QLabel()
         self.background.resize(self.width, self.height)
         self._add_widget(self.background, self.start_x, self.start_y)
@@ -83,6 +86,32 @@ class WindowArea:
                 min_y = widget.y()
         return top_widget
 
+    def get_left_widget(self):
+        min_x = WIDTH + 1
+        left_widget = None
+        for widget in self.children:
+            if widget.x() < min_x:
+                left_widget = widget
+                min_x = widget.x()
+        return left_widget
+
+    def get_right_widget(self):
+        max_x = -1
+        right_widget = None
+        for widget in self.children:
+            if widget.x() > max_x:
+                right_widget = widget
+                max_x = widget.x()
+        return right_widget
+
+    def get_need_wheel_left(self):
+        left_widget = self.get_left_widget()
+        return left_widget.x() < self.start_x
+
+    def get_need_wheel_right(self):
+        right_widget = self.get_right_widget()
+        return right_widget.x() + right_widget.width() > self.end_x
+
     def get_need_wheel_down(self):
         bottom_widget = self.get_bottom_widget()
         return bottom_widget.y() + bottom_widget.height() > HEIGHT
@@ -92,10 +121,12 @@ class WindowArea:
         return top_widget.y() < self.start_y
 
     def delta_change_y_children(self, delta_y: int):
+        self._delta_wheel_y += delta_y
         for widget in self.children:
             widget.move(widget.x(), widget.y() + delta_y)
 
     def delta_change_x_children(self, delta_x: int):
+        self._delta_wheel_x += delta_x
         for widget in self.children:
             widget.move(widget.x() + delta_x, widget.y())
 
@@ -158,7 +189,7 @@ class TabWindowArea(WindowArea):
         if isinstance(view, QTab):
             view.set_select(True)
         self.on_select_tab(tab)
-        self._recalc_coord_children()
+        self._recalc_x_coord_children()
 
     def _on_unselect(self, tab: Tab):
         view = self.children[self.tab_manager.index(tab)]
@@ -171,8 +202,8 @@ class TabWindowArea(WindowArea):
         self.deleteLaterWidget(view)
         self.on_remove_tab(tab)
 
-    def _recalc_coord_children(self):
-        item_x = self.start_x + MARGIN_TAB_H_TP
+    def _recalc_x_coord_children(self):
+        item_x = self.start_x + MARGIN_TAB_H_TP + self._delta_wheel_x
         for item in self.children:
             if isinstance(item, QWidget):
                 item.move(item_x, item.y())
@@ -183,7 +214,7 @@ class TabWindowArea(WindowArea):
         if isinstance(view, QTab):
             view.setText(tab.name)
         self.on_change_tab(tab)
-        self._recalc_coord_children()
+        self._recalc_x_coord_children()
 
 
 class MainWindowArea(WindowArea):
@@ -279,3 +310,5 @@ class HistoryButtonsArea(WindowArea):
         self.prev_h.move(START_X_HISTORY_BUTTON, START_Y_HISTORY_BUTTON)
         self.prev_h.set_click(self.click_back_history)
         self.next_h.set_click(self.click_next_history)
+
+        self.children = [self.prev_h, self.next_h]
