@@ -5,15 +5,15 @@ from PathObjects import *
 from Tab import *
 from UtilsVisual import UtilsVisual
 from QPathObjects import *
-from QHistoryButton import *
+from QImageButton import *
 
 
 class Areas(Enum):
     TabPanel = (START_X_TP, END_X_TP, START_Y_TP, END_Y_TP, WIDTH_TP, HEIGHT_TP, COLOR_BACKGROUND_TOP_RGB)
     MainPanel = (START_X_MP, END_X_MP, START_Y_MP, END_Y_MP, WIDTH_MP, HEIGHT_MP, COLOR_BACKGROUND_MAIN_RGB)
     LeftPanel = (START_X_LP, END_X_LP, START_Y_LP, END_Y_LP, WIDTH_LP, HEIGHT_LP, COLOR_BACKGROUND_LEFT_RGB)
-    HistoryButtonsPanel = (START_X_PANEL_HISTORY, END_X_PANEL_HISTORY, START_Y_PANEL_HISTORY, END_Y_PANEL_HISTORY,
-                           WIDTH_PANEL_HISTORY, HEIGHT_PANEL_HISTORY, COLOR_BACKGROUND_TOP_RGB)
+    ButtonsPanel = (START_X_PANEL_BUTTONS, END_X_PANEL_BUTTONS, START_Y_PANEL_BUTTONS, END_Y_PANEL_BUTTONS,
+                    WIDTH_PANEL_BUTTONS, HEIGHT_PANEL_BUTTONS, COLOR_BACKGROUND_TOP_RGB)
     App = (0, WIDTH - 1, 0, HEIGHT - 1, WIDTH, HEIGHT, COLOR_BACKGROUND_DEFAULT)
 
 
@@ -297,18 +297,24 @@ class MainWindowArea(WindowArea):
         return self._tab
 
 
-class HistoryButtonsArea(WindowArea):
-    def __init__(self, window: QWidget, click_back_history, click_next_history):
-        super().__init__(window, area=Areas.HistoryButtonsPanel)
+class ButtonsAreaWindow(WindowArea):
+    def __init__(self, window: QWidget, click_back_history, click_next_history, click_setting):
+        super().__init__(window, area=Areas.ButtonsPanel)
 
         self.click_next_history = click_next_history
         self.click_back_history = click_back_history
+        self.click_setting = click_setting
 
-        self.next_h = QHistoryButton(self.window, TypeHistoryButton.RIGHT)
-        self.next_h.move(START_X_HISTORY_BUTTON + WIDTH_HISTORY_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_HISTORY_BUTTON)
-        self.prev_h = QHistoryButton(self.window, TypeHistoryButton.LEFT)
-        self.prev_h.move(START_X_HISTORY_BUTTON, START_Y_HISTORY_BUTTON)
+        self.next_h = QImageButton(self.window, TypeImageButton.RIGHT)
+        self.next_h.move(START_X_HISTORY_BUTTON + WIDTH_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_BUTTON)
+        self.prev_h = QImageButton(self.window, TypeImageButton.LEFT)
+        self.prev_h.move(START_X_HISTORY_BUTTON, START_Y_BUTTON)
         self.prev_h.set_click(self.click_back_history)
         self.next_h.set_click(self.click_next_history)
+
+        self.setting = QImageButton(self.window, TypeImageButton.SETTINGS)
+        self.setting.move(START_X_SETTING, START_Y_BUTTON)
+        self.setting.set_click(self.click_setting)
+        self.setting.setEnabled(True)
 
         self.children = [self.prev_h, self.next_h]

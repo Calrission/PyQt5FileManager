@@ -47,9 +47,10 @@ class Main(QWidget):
                                   on_select_tab=self.on_select_tab,
                                   on_remove_tab=self.on_remove_tab,
                                   on_change_tab=self.on_change_tab)
-        self.history_buttons = HistoryButtonsArea(window=self,
-                                                  click_back_history=self.click_back_history,
-                                                  click_next_history=self.click_next_history)
+        self.history_buttons = ButtonsAreaWindow(window=self,
+                                                 click_back_history=self.click_back_history,
+                                                 click_next_history=self.click_next_history,
+                                                 click_setting=self.click_setting)
 
         self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main])
 
@@ -100,6 +101,9 @@ class Main(QWidget):
         tab = self.tabs.tab_manager.get_select_tab()
         tab.move_next_history()
         self.sync_history_buttons()
+
+    def click_setting(self):
+        print("press setting")
 
     def sync_history_buttons(self):
         select_tab = self.tabs.tab_manager.get_select_tab()

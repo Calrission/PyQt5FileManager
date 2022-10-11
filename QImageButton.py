@@ -4,16 +4,17 @@ from ConstValues import *
 from enum import Enum
 
 
-class TypeHistoryButton(Enum):
+class TypeImageButton(Enum):
     LEFT = ["files/left_d.png", "files/left_e.png"]
     RIGHT = ["files/right_d.png", "files/right_e.png"]
+    SETTINGS = ["files/setting_d.png", "files/setting.png"]
 
 
-class QHistoryButton(QWidget):
-    def __init__(self, parent, type_: TypeHistoryButton):
+class QImageButton(QWidget):
+    def __init__(self, parent, type_: TypeImageButton):
         super().__init__(parent=parent)
 
-        self.resize(WIDTH_HISTORY_BUTTON, HEIGHT_HISTORY_BUTTON)
+        self.resize(WIDTH_BUTTON, HEIGHT_BUTTON)
 
         self.states = type_.value
         self.click = None

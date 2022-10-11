@@ -170,9 +170,10 @@ class QTab(QWidget):
         self._text_view = QLabel(self)
 
         self._setupText()
-        self.setText(tab.name)
 
         self.resize(self.width(), HEIGHT_TAB_TP)
+
+        self.setText(tab.name)
 
         self._reset_pixmap_background_tab()
 
@@ -181,7 +182,6 @@ class QTab(QWidget):
         self._reset_pixmap_background_tab()
 
     def _setupText(self):
-        self._text_view.setAlignment(Qt.AlignVCenter)
         values = ", ".join([str(i) for i in COLOR_TEXT])
         self._text_view.setStyleSheet("QLabel { color: rgb(" + values + "); }")
 
@@ -194,9 +194,9 @@ class QTab(QWidget):
         self._text_view.setText(text)
         self._text_view.show()
         self._text_view.adjustSize()
-        self._text_view.resize(self._text_view.width(), self.height())
-        self._text_view.move(PADDING_TAB, self._text_view.y())
+        self._text_view.setAlignment(Qt.AlignVCenter)
         self.resize(self._text_view.width() + 2 * PADDING_TAB, self.height())
+        self._text_view.move(PADDING_TAB, int(self.height() / 2 - self._text_view.height() / 2))
         self._reset_pixmap_background_tab()
 
     def text(self):
