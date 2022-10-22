@@ -113,21 +113,7 @@ class Main(QWidget):
         self.history_buttons.prev_h.setEnabled(can_prev)
 
     def initUI(self):
-        self.tabs.tab_manager.add_new_tab("/home/artemii/Загрузки")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
-        self.tabs.tab_manager.add_new_tab("/home/artemii")
+        self.tabs.tab_manager.add_new_tab(START_TAB)
         self.sync_history_buttons()
 
     def mouseMoveEvent(self, event):

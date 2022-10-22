@@ -5,7 +5,7 @@ from os import listdir
 from platform import system
 from Exceptions import *
 from enum import Enum
-from ConstValues import SLASH, OS
+from ConstValues import SLASH, OS, START_TAB
 
 
 class TypePathObject(Enum):
@@ -58,8 +58,8 @@ class Folder(PathObject):
         self.children_folders = []
         self.children_files = []
         if path == "":
-            path = SLASH
-        if path[-1] == SLASH and path.strip() != SLASH:
+            path = START_TAB
+        if path[-1] == SLASH and path != START_TAB:
             path = path[:-1]
         super().__init__(path, name)
         if self.name is None:
@@ -100,7 +100,7 @@ class Folder(PathObject):
             raise GetFileFolderError(obj, self)
 
     def __str__(self):
-        return self.name
+        return self.path
 
     def __repr__(self):
         return super().__repr__() + f"{len(self.children)};"

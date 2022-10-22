@@ -4,7 +4,6 @@ from pprint import pprint
 from PyQt5.QtWidgets import QApplication
 from App import Main
 from sys import argv, exit
-from platform import system
 
 
 def startTerminalVersion():

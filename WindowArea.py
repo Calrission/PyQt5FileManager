@@ -317,4 +317,4 @@ class ButtonsAreaWindow(WindowArea):
         self.setting.set_click(self.click_setting)
         self.setting.setEnabled(True)
 
-        self.children = [self.prev_h, self.next_h]
+        self.children = [self.prev_h, self.next_h, self.setting]

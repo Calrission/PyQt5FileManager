@@ -115,6 +115,9 @@ SLASH_LINUX = "/"
 
 OS = system()
 
+START_TAB_LINUX = "/"
+START_TAB_WINDOWS = "C:\\"
+
 
 def SLASH():
     if OS == "Windows":
@@ -124,4 +127,12 @@ def SLASH():
         return SLASH_LINUX
 
 
+def START_TAB():
+    if OS == "Windows":
+        return START_TAB_WINDOWS
+    else:
+        return START_TAB_LINUX
+
+
 SLASH = SLASH()
+START_TAB = START_TAB()

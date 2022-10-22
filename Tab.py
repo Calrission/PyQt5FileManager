@@ -107,7 +107,7 @@ class TabManager:
 
         self._tabs = tabs if tabs is not None else []
 
-    def add_new_tab(self, path=""):
+    def add_new_tab(self, path):
         tab = Tab(path)
         tab.add_on_change_folder(lambda folder: self.on_change_tab(self._get_tab_folder(folder)))
         self.add_tab(tab)
