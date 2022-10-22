@@ -1,10 +1,5 @@
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QMoveEvent
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-from PyQt5 import uic
-from ConstValues import *
+from PyQt5.QtWidgets import QPushButton
 from WindowArea import *
-from PathObjects import *
 from Tab import *
 from MouseAreaListener import MouseAreaListener
 
@@ -103,7 +98,7 @@ class Main(QWidget):
         self.sync_history_buttons()
 
     def click_setting(self):
-        print("press setting")
+        pass
 
     def sync_history_buttons(self):
         select_tab = self.tabs.tab_manager.get_select_tab()
@@ -125,13 +120,11 @@ class Main(QWidget):
         if isinstance(area, MainWindowArea):
             px_y = int(angle * ANGLE_WHEEL_TO_PX)
             if (angle < 0 and area.get_need_wheel_down()) or (angle > 0 and area.get_need_wheel_top()):
-                print(f"Прокрутка контента по вертикали на {px_y}")
                 area.delta_change_y_children(px_y)
                 self.tabs.raise_()
                 self.history_buttons.raise_()
         elif isinstance(area, TabWindowArea):
             px_x = int(angle * ANGLE_WHEEL_TO_PX)
             if (angle < 0 and area.get_need_wheel_right()) or (angle > 0 and area.get_need_wheel_left()):
-                print(f"Прокрутка контента по горизонтали на {px_x}")
                 area.delta_change_x_children(px_x)
                 self.history_buttons.raise_()

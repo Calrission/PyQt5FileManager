@@ -107,7 +107,7 @@ class Folder(PathObject):
 
     def next(self, next_folder_name: str):
         try:
-            self.__init__(self.path + f"{SLASH}{next_folder_name}")
+            self.__init__(self.path + f"{SLASH if self.path != START_TAB else ''}{next_folder_name}")
         except IndexError:
             raise MovingToFolderError(self, next_folder_name)
 
@@ -130,7 +130,7 @@ class Folder(PathObject):
     def get_short_name(self):
         # 1/2/3/4 -> 3/4
         short = self.path
-        if short.count(SLASH) >= 2:
+        if short.replace(START_TAB, SLASH).count(SLASH) >= 2:
             short = SLASH.join(short.split(SLASH)[-2:])
         return short
 
@@ -150,13 +150,7 @@ class File(PathObject):
             r = self.name[::-1]
             self.format = r[:r.index(".")][::-1]
         except ValueError:
-            if OS == "Windows":
-                raise DetectFormatFileError(self)
-            else:
-                self.format = ""
-        finally:
-            if self.format == "" and OS == "Windows":
-                raise EmptyDetectFormatFileError(self)
+            self.format = ""
 
     def __detect_type_file(self):
         pass
@@ -167,7 +161,7 @@ class File(PathObject):
             # from subprocess import call
             # call(('open', self.path))
         if OS == 'Windows':  # Windows
-            from os import walk, startfile
+            from os import startfile
             startfile(self.path)
         else:  # linux variants
             from subprocess import call
