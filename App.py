@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QPushButton
+from PyQt5 import QtGui
+
 from WindowArea import *
 from Tab import *
 from MouseAreaListener import MouseAreaListener
@@ -25,6 +26,7 @@ class Main(QWidget):
         self.initUI()
 
     def setupWindow(self):
+        self.setWindowIcon(QtGui.QIcon('files/icon.png'))
         self.setGeometry(0, 0, WIDTH, HEIGHT)
         self.setWindowTitle(TITLE)
         self.setMinimumWidth(MIN_WIDTH)
@@ -48,28 +50,6 @@ class Main(QWidget):
                                                  click_setting=self.click_setting)
 
         self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main])
-
-    def initUITestMarkup(self):
-        tp = QPushButton("TP")
-        tp.resize(WIDTH_TP, HEIGHT_TP)
-        tp.move(START_X_TP, START_Y_TP)
-        self.tabs.add_widget(tp)
-
-        lp = QPushButton("LP")
-        lp.resize(WIDTH_LP, HEIGHT_LP)
-        lp.move(START_X_LP, START_Y_LP)
-        self.left.add_widget(lp)
-
-        mp = QPushButton("MP")
-        mp.resize(WIDTH_MP, HEIGHT_MP)
-        mp.move(START_X_MP, START_Y_MP)
-        self.main.add_widget(mp)
-
-    def initTestMainArea(self):
-        self.initUITestMarkup()
-        lst = [QPushButton(f"{i + 1}") for i in range(90)]
-        [i.resize(WIDTH_ITEM, HEIGHT_ITEM) for i in lst]
-        [self.main.add_item(i) for i in lst]
 
     def on_add_tab(self, tab: Tab):
         pass
