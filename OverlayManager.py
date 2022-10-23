@@ -1,3 +1,5 @@
+from PyQt5.QtWidgets import QWidget
+
 from Overlays import QOverlay
 
 
@@ -125,3 +127,21 @@ class OverlayManager:
                 level_overlays.append([parent] + sub_overlays)
             lst.append(level_overlays)
         return lst
+
+
+class QWidgetOverlayManager(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.background_overlay = None
+        self.manager = OverlayManager()
+
+    def add_new_overlay(self, overlay: QOverlay, level=1):
+        self.manager.add_parent_overlay(overlay, level)
+
+    def show_overlay(self, overlay: QOverlay):
+        overlay.show()
+
+    def refresh(self):
+        pass
+
+

@@ -4,7 +4,7 @@ from Tab import *
 from MouseAreaListener import MouseAreaListener
 
 
-class Main(QWidget):
+class Main(QWidgetOverlayManager):
     def __init__(self):
         super().__init__()
         self.setMouseTracking(True)

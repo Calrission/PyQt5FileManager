@@ -1,6 +1,9 @@
 from ConstValues import *
 from PyQt5.QtWidgets import *
 from enum import Enum
+
+from OverlayManager import QWidgetOverlayManager
+from Overlays import QActionPathObject, QOverlay
 from PathObjects import *
 from Tab import *
 from UtilsVisual import UtilsVisual
@@ -18,7 +21,7 @@ class Areas(Enum):
 
 
 class WindowArea:
-    def __init__(self, window: QWidget,
+    def __init__(self, window: QWidgetOverlayManager,
                  start_x: int = None, end_x: int = None,
                  start_y: int = None, end_y: int = None,
                  width: int = None, height: int = None,
@@ -143,7 +146,7 @@ class WindowArea:
 
 
 class TabWindowArea(WindowArea):
-    def __init__(self, window: QWidget,
+    def __init__(self, window: QWidgetOverlayManager,
                  on_add_tab, on_select_tab,
                  on_remove_tab, on_unselect_tab,
                  on_change_tab,):
@@ -219,7 +222,7 @@ class TabWindowArea(WindowArea):
 
 class MainWindowArea(WindowArea):
 
-    def __init__(self, window: QWidget):
+    def __init__(self, window: QWidgetOverlayManager):
         super().__init__(window, area=Areas.MainPanel)
 
         self.widgets = [[]]
@@ -265,8 +268,18 @@ class MainWindowArea(WindowArea):
             view.mouseDoubleClickEvent = lambda *args: self.click_folder(view)
         elif isinstance(item, File):
             view.mouseDoubleClickEvent = lambda *args: item.open_default_app_os()
+        view.mousePressEvent = lambda event: self.click_mouse_item(event, item, view)
         self.add_item(view)
         return view
+
+    def click_mouse_item(self, event, item: PathObject, view: QPathObject):
+        if event.button() == Qt.RightButton:
+            self.show_overlay_item(event.x() + view.x(), event.y() + view.y(), item)
+
+    def show_overlay_item(self, x: int, y: int, item: PathObject):
+        overlay = QActionPathObject(item, x, y, self.window)
+        self.window.add_new_overlay(overlay)
+        self.window.show_overlay(overlay)
 
     def click_folder(self, view: QWidget):
         r, c = self.index(view)
@@ -298,7 +311,7 @@ class MainWindowArea(WindowArea):
 
 
 class ButtonsAreaWindow(WindowArea):
-    def __init__(self, window: QWidget, click_back_history, click_next_history, click_setting):
+    def __init__(self, window: QWidgetOverlayManager, click_back_history, click_next_history, click_setting):
         super().__init__(window, area=Areas.ButtonsPanel)
 
         self.click_next_history = click_next_history
