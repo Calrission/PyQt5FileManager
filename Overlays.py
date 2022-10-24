@@ -16,6 +16,7 @@ class QOverlay(QWidget):
 
     def show(self) -> None:
         self.move(self.x, self.y)
+        self.raise_()
         super().show()
 
     def initUI(self):

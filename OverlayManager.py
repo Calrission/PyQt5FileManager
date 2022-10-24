@@ -1,6 +1,9 @@
-from PyQt5.QtWidgets import QWidget
+import enum
 
+from PyQt5.QtWidgets import QWidget, QLabel
+from ConstValues import *
 from Overlays import QOverlay
+from UtilsVisual import UtilsVisual
 
 
 class LevelsOverlays:
@@ -57,6 +60,9 @@ class LevelsOverlays:
         levels = self.get_levels()
         return [self._levels[i] for i in levels]
 
+    def clear(self):
+        self._levels = {}
+
 
 class OverlayManager:
     def __init__(self, overlays_parent: list[QOverlay] = None):
@@ -79,6 +85,9 @@ class OverlayManager:
         overlays_level = self._levels.get_overlays(level)
         return list(filter(lambda x: x in self._overlays, overlays_level))
 
+    def get_parents(self):
+        return list(self._overlays.keys())
+
     def get_sub_overlays_parent(self, overlay: QOverlay):
         return self._overlays[overlay]
 
@@ -98,6 +107,10 @@ class OverlayManager:
         parent_overlay = self.get_parent_from_sub_overlay(sub_overlay)
         self._levels.remove_overlay(sub_overlay)
         self._overlays[parent_overlay].remove(sub_overlay)
+
+    def remove_all(self):
+        self._levels.clear()
+        self._overlays = {}
 
     def to_level_parent(self, overlay: QOverlay, level: int):
         sub_overlays = self._overlays[overlay]
@@ -129,19 +142,58 @@ class OverlayManager:
         return lst
 
 
+class ModeOverlayManager(enum.Enum):
+    MULTY = 0
+    SINGLE = 1
+
+
 class QWidgetOverlayManager(QWidget):
-    def __init__(self):
+    def __init__(self, mode: ModeOverlayManager = ModeOverlayManager.SINGLE):
         super().__init__()
-        self.background_overlay = None
+        self.mode = mode
+        self.background_overlay = QLabel(self)
+        self.background_overlay.resize(WIDTH, HEIGHT)
+        self.background_overlay.mousePressEvent = lambda x: self._click_background()
+        UtilsVisual.set_background_color_label(self.background_overlay, (0, 0, 0), WIDTH, HEIGHT, 190)
         self.manager = OverlayManager()
+        self.active_overlays = []
+
+    def dismiss_all(self):
+        for parent in self.manager.get_parents():
+            overlays = self.manager.get_sub_overlays_parent(parent)
+            self.manager.remove_parent_overlay(parent)
+            self.active_overlays = []
+            for i in [parent] + overlays:
+                i.deleteLater()
+        self.manager.remove_all()
 
     def add_new_overlay(self, overlay: QOverlay, level=1):
+        if self.mode == ModeOverlayManager.SINGLE:
+            self.dismiss_all()
         self.manager.add_parent_overlay(overlay, level)
+        self.refresh()
 
-    def show_overlay(self, overlay: QOverlay):
-        overlay.show()
+    def add_sub_overlay(self, overlay: QOverlay, parent: QOverlay):
+        self.manager.add_sub_overlay(overlay, parent)
+        self.refresh()
+
+    def _click_background(self):
+        for overlay in self.active_overlays:
+            overlay.hide()
+        self.background_overlay.hide()
 
     def refresh(self):
-        pass
+        for level in self.manager.to_list():
+            for group in level:
+                for overlay in group:
+                    if isinstance(overlay, QOverlay):
+                        overlay.raise_()
 
+    def show_overlay(self, overlay: QOverlay):
+        self._show_background()
+        self.active_overlays.append(overlay)
+        overlay.show()
 
+    def _show_background(self):
+        self.background_overlay.raise_()
+        self.background_overlay.show()

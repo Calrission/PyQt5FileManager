@@ -10,9 +10,11 @@ class UtilsVisual:
         label.setPixmap(pixmap)
 
     @staticmethod
-    def set_background_color_label(label: QLabel, color: tuple):
-        pixmap = QPixmap(label.width(), label.height())
-        pixmap.fill(QColor(*color))
+    def set_background_color_label(label: QLabel, color: tuple, w: int = None, h: int = None, alpha: int = 255):
+        w = w if w is not None else label.width()
+        h = h if h is not None else label.height()
+        pixmap = QPixmap(w, h)
+        pixmap.fill(QColor(*color, alpha=alpha))
         label.setPixmap(pixmap)
 
     @staticmethod
