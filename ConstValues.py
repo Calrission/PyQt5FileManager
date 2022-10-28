@@ -107,8 +107,11 @@ JAVA_FORMATS = ["java"]
 JAR_FORMATS = ["jar"]
 POWERPOINT_FORMATS = ["ppxt", "pptm", "ppt", "potx",
                       "pot", "potm"]
+
 QT_UI_FORMATS = ["ui"]
 APK_FORMATS = ["apk"]
+
+CODE_FORMATS = PYTHON_FORMATS + JAVA_FORMATS
 
 SLASH_WINDOWS = "\\"
 SLASH_LINUX = "/"

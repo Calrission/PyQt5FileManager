@@ -1,17 +1,23 @@
 import os
-import platform
 from os.path import exists
 from os import listdir
-from platform import system
 from Exceptions import *
 from enum import Enum
-from ConstValues import SLASH, OS, START_TAB
+from ConstValues import SLASH, OS, START_TAB, AUDIO_FORMATS, VIDEO_FORMATS, IMAGE_FORMATS, \
+    TXT_FORMATS, CODE_FORMATS, PDF_FORMATS, WORD_FORMATS, EXCEL_FORMATS, POWERPOINT_FORMATS
 
 
 class TypePathObject(Enum):
     FOLDER = "folder"
     FILE = "file"
     UNKNOWN = "unknown"
+
+class TypeFormatFile(Enum):
+    MEDIA = "media"
+    TXT = "txt"
+    CODE = "code"
+    OFFICE = "office"
+    OTHER = "other"
 
 
 class PathObject:
@@ -166,6 +172,17 @@ class File(PathObject):
         else:  # linux variants
             from subprocess import call
             call(('xdg-open', self.path))
+
+    def get_type_format(self):
+        if self.format in IMAGE_FORMATS + VIDEO_FORMATS + AUDIO_FORMATS:
+            return TypeFormatFile.MEDIA
+        if self.format in PDF_FORMATS + WORD_FORMATS + POWERPOINT_FORMATS + EXCEL_FORMATS:
+            return TypeFormatFile.OFFICE
+        if self.format in CODE_FORMATS:
+            return TypeFormatFile.CODE
+        if self.format in TXT_FORMATS:
+            return TypeFormatFile.TXT
+        return TypeFormatFile.OTHER
 
     def refresh(self):
         self.__check_type()

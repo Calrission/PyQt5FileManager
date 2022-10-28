@@ -277,7 +277,7 @@ class MainWindowArea(WindowArea):
             self.show_overlay_item(event.x() + view.x(), event.y() + view.y(), item)
 
     def show_overlay_item(self, x: int, y: int, item: PathObject):
-        overlay = QActionPathObject(item, x, y, self.window)
+        overlay = QActionPathObject.get_instance(item, x, y, self.window)
         self.window.add_new_overlay(overlay)
         self.window.show_overlay(overlay)
 

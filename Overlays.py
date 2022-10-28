@@ -1,6 +1,6 @@
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
-from PathObjects import PathObject
+from PathObjects import PathObject, TypePathObject, File, TypeFormatFile
 from QSwitchImageButton import QImageView
 
 
@@ -46,28 +46,31 @@ class QActionPathObject(QOverlay):
 
     @staticmethod
     def get_instance(path_object: PathObject, x: int, y: int, parent: QWidget):
-        return QActionPathObject(path_object, x, y, parent)
+        can_pre_watch = isinstance(path_object, File) and path_object.type == TypePathObject.FILE and \
+                        path_object.get_type_format() in [TypeFormatFile.MEDIA, TypeFormatFile.CODE, TypeFormatFile.TXT]
+        items = [
+            "Открыть",
+            "Переименовать", "Удалить",
+            "Свойства"
+        ]
+        if can_pre_watch:
+            items.insert(1, "Предпросмотр")
+        return QActionPathObject(path_object, x, y, parent, items)
 
-    def __init__(self, path_object: PathObject, x: int, y: int, parent: QWidget):
+    def __init__(self, path_object: PathObject, x: int, y: int, parent: QWidget, items: list[str]):
         super().__init__(x, y, parent)
         self.path_object = path_object
-        self.items = []
+        self.items = items
         self.labels = []
         self.clickItemEvent = None
 
     def initUI(self):
-        self.items += [
-            "Открыть", "Предпросмотр",
-            "Переименовать", "Удалить",
-            "Свойства"
-        ]
         super().initUI()
         self.refresh()
 
     def refresh(self):
         self.labels.clear()
         for index, item in enumerate(self.items):
-            pass
             label = QLabel(item)
             label.setParent(self)
             label.mousePressEvent = lambda x: self.clickItemEvent(label) if self.clickItemEvent is not None else None
