@@ -3,6 +3,7 @@ from Tab import Tab
 from pprint import pprint
 from PyQt5.QtWidgets import QApplication
 from App import Main
+import sys
 from sys import argv, exit
 
 
@@ -34,4 +35,5 @@ if __name__ == "__main__":
     app = QApplication(argv)
     main = Main()
     main.show()
+    sys.excepthook = main.excepthook
     exit(app.exec())

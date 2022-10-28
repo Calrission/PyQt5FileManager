@@ -123,6 +123,12 @@ class OverlayManager:
         min_level = self._levels.get_min_level() - 1
         self.to_level_parent(overlay, min_level)
 
+    def max(self):
+        return self._levels.get_max_level()
+
+    def min(self):
+        return self._levels.get_min_level()
+
     def is_parent(self, overlay: QOverlay):
         return overlay in self._overlays
 
