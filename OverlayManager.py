@@ -1,7 +1,7 @@
 import enum
 
 from PyQt5.QtWidgets import QWidget, QLabel
-from ConstValues import *
+from ConstValues import WIDTH, HEIGHT
 from Overlays import QOverlay
 from UtilsVisual import UtilsVisual
 

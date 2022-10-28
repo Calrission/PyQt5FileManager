@@ -8,7 +8,7 @@ from PathObjects import *
 from Tab import *
 from UtilsVisual import UtilsVisual
 from QPathObjects import *
-from QImageButton import *
+from QSwitchImageButton import *
 
 
 class Areas(Enum):
@@ -318,14 +318,14 @@ class ButtonsAreaWindow(WindowArea):
         self.click_back_history = click_back_history
         self.click_setting = click_setting
 
-        self.next_h = QImageButton(self.window, TypeImageButton.RIGHT)
+        self.next_h = QSwitchImageButton(self.window, TypeImageButton.RIGHT)
         self.next_h.move(START_X_HISTORY_BUTTON + WIDTH_BUTTON + MARGIN_BUTTON_HISTORY, START_Y_BUTTON)
-        self.prev_h = QImageButton(self.window, TypeImageButton.LEFT)
+        self.prev_h = QSwitchImageButton(self.window, TypeImageButton.LEFT)
         self.prev_h.move(START_X_HISTORY_BUTTON, START_Y_BUTTON)
         self.prev_h.set_click(self.click_back_history)
         self.next_h.set_click(self.click_next_history)
 
-        self.setting = QImageButton(self.window, TypeImageButton.SETTINGS)
+        self.setting = QSwitchImageButton(self.window, TypeImageButton.SETTINGS)
         self.setting.move(START_X_SETTING, START_Y_BUTTON)
         self.setting.set_click(self.click_setting)
         self.setting.setEnabled(True)
