@@ -1,7 +1,6 @@
 from enum import Enum
 
 from PyQt5 import QtGui
-from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import *
 from PathObjects import PathObject, TypePathObject, File, TypeFormatFile
 from QSwitchImageButton import QImageView

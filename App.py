@@ -1,8 +1,4 @@
-import traceback
-
 from PyQt5 import QtGui
-
-from Overlays import QOverlay
 from WindowArea import *
 from Tab import *
 from MouseAreaListener import MouseAreaListener
