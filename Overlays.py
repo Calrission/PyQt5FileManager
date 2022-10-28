@@ -39,35 +39,26 @@ class QActionPathObject(QOverlay):
     def __init__(self, path_object: PathObject, x: int, y: int, parent: QWidget):
         super().__init__(x, y, parent)
         self.path_object = path_object
+        self.items = []
+        self.labels = []
+        self.clickItemEvent = None
 
     def initUI(self):
-        open_label = QLabel(self)
-        open_label.setText("Открыть")
-
-        pre_open_label = QLabel(self)
-        pre_open_label.setText("Предпросмотр")
-
-        rename_label = QLabel(self)
-        rename_label.setText("Переименовать")
-
-        delete_label = QLabel(self)
-        delete_label.setText("Удалить")
-
-        info_label = QLabel(self)
-        info_label.setText("Свойства")
-
-        open_label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        pre_open_label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        rename_label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        delete_label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        info_label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-
-        open_label.move(5, 0)
-        pre_open_label.move(5, 20)
-        rename_label.move(5, 40)
-        delete_label.move(5, 60)
-        info_label.move(5, 80)
-
+        self.items += [
+            "Открыть", "Предпросмотр",
+            "Переименовать", "Удалить",
+            "Свойства"
+        ]
         super().initUI()
-        self._init_background(80, 100)
+        self.refresh()
 
+    def refresh(self):
+        self.labels.clear()
+        for index, item in enumerate(self.items):
+            label = QLabel(item)
+            label.setParent(self)
+            label.mousePressEvent = lambda x: self.clickItemEvent(label) if self.clickItemEvent is not None else None
+            label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            label.move(5, index * 25 + 5)
+            self.labels.append(label)
+        self._init_background(self.width(), len(self.items) * 25 + 5)
