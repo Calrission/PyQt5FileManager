@@ -1,12 +1,6 @@
-from ConstValues import *
-from PyQt5.QtWidgets import *
-from enum import Enum
-
 from OverlayManager import QWidgetOverlayManager
-from Overlays import QActionPathObject, QOverlay
-from PathObjects import *
+from Overlays import QActionPathObject, Action
 from Tab import *
-from UtilsVisual import UtilsVisual
 from QPathObjects import *
 from QSwitchImageButton import *
 
@@ -264,13 +258,16 @@ class MainWindowArea(WindowArea):
 
     def add_item_path_object(self, item: PathObject):
         view = self.create_view(item)
-        if isinstance(item, Folder):
-            view.mouseDoubleClickEvent = lambda *args: self.click_folder(view)
-        elif isinstance(item, File):
-            view.mouseDoubleClickEvent = lambda *args: item.open_default_app_os()
+        view.mouseDoubleClickEvent = lambda *args: self.get_func_action_click_path_object(item)(item)
         view.mousePressEvent = lambda event: self.click_mouse_item(event, item, view)
         self.add_item(view)
         return view
+
+    def get_func_action_click_path_object(self, item: PathObject):
+        if isinstance(item, Folder):
+            return self.click_folder
+        elif isinstance(item, File):
+            return self.click_file
 
     def click_mouse_item(self, event, item: PathObject, view: QPathObject):
         if event.button() == Qt.RightButton:
@@ -278,17 +275,33 @@ class MainWindowArea(WindowArea):
 
     def show_overlay_item(self, x: int, y: int, item: PathObject):
         overlay = QActionPathObject.get_instance(item, x, y, self.window)
+        overlay.clickItemEvent = self.eventItemOverlayPathObject
         self.window.add_new_overlay(overlay)
         self.window.show_overlay(overlay)
 
-    def click_folder(self, view: QWidget):
-        r, c = self.index(view)
+    def eventItemOverlayPathObject(self, action: Action, item: PathObject):
+        self.window.dismiss_all()
+        if action == Action.OPEN:
+            self.get_func_action_click_path_object(item)(item)
+
+    def click_folder(self, item: Folder):
+        r, c = self.index_path_object(item)
         index = r * self.max_column + c
         obj = self._tab.folder.children[index]
         if not isinstance(obj, Folder):
             raise ValueError("Click folder to not folder object in MainAreaWindow")
         folder_name = obj.name
         self._tab.move_to_child_folder(folder_name)
+
+    def click_file(self, item: File):
+        item.open_default_app_os()
+
+    def index_path_object(self, path_object: PathObject):
+        for i_r, r in enumerate(self.widgets):
+            for i_c, c in enumerate(r):
+                if c.obj == path_object:
+                    return i_r, i_c
+        raise ValueError(f"{path_object} not found in MainAreaWindow")
 
     def index(self, widget: QWidget):
         for i_r, r in enumerate(self.widgets):

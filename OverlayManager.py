@@ -101,7 +101,6 @@ class OverlayManager:
     def remove_parent_overlay(self, overlay: QOverlay):
         sub_overlays = self._overlays[overlay]
         self._levels.remove_overlays([overlay] + sub_overlays)
-        del self._overlays[overlay]
 
     def remove_sub_overlay(self, sub_overlay: QOverlay):
         parent_overlay = self.get_parent_from_sub_overlay(sub_overlay)
@@ -164,8 +163,10 @@ class QWidgetOverlayManager(QWidget):
             self.manager.remove_parent_overlay(parent)
             self.active_overlays = []
             for i in [parent] + overlays:
+                i.hide()
                 i.deleteLater()
         self.manager.remove_all()
+        self.background_overlay.hide()
 
     def add_new_overlay(self, overlay: QOverlay, level=1):
         if self.mode == ModeOverlayManager.SINGLE:

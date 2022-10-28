@@ -12,6 +12,7 @@ class TypePathObject(Enum):
     FILE = "file"
     UNKNOWN = "unknown"
 
+
 class TypeFormatFile(Enum):
     MEDIA = "media"
     TXT = "txt"

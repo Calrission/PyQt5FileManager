@@ -1,4 +1,7 @@
+from enum import Enum
+
 from PyQt5 import QtGui
+from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import *
 from PathObjects import PathObject, TypePathObject, File, TypeFormatFile
 from QSwitchImageButton import QImageView
@@ -42,6 +45,14 @@ class QOverlay(QWidget):
         return f"{self.__class__.__name__}({self.x=}, {self.y=})"
 
 
+class Action(Enum):
+    OPEN = "Открыть"
+    RENAME = "Переименовать"
+    DELETE = "Удалить"
+    PRE_OPEN = "Предпросмотр"
+    INFO = "Свойства"
+
+
 class QActionPathObject(QOverlay):
 
     @staticmethod
@@ -49,15 +60,13 @@ class QActionPathObject(QOverlay):
         can_pre_watch = isinstance(path_object, File) and path_object.type == TypePathObject.FILE and \
                         path_object.get_type_format() in [TypeFormatFile.MEDIA, TypeFormatFile.CODE, TypeFormatFile.TXT]
         items = [
-            "Открыть",
-            "Переименовать", "Удалить",
-            "Свойства"
+            Action.OPEN, Action.RENAME, Action.DELETE, Action.INFO
         ]
         if can_pre_watch:
-            items.insert(1, "Предпросмотр")
+            items.insert(1, Action.PRE_OPEN)
         return QActionPathObject(path_object, x, y, parent, items)
 
-    def __init__(self, path_object: PathObject, x: int, y: int, parent: QWidget, items: list[str]):
+    def __init__(self, path_object: PathObject, x: int, y: int, parent: QWidget, items: list[Action]):
         super().__init__(x, y, parent)
         self.path_object = path_object
         self.items = items
@@ -71,11 +80,24 @@ class QActionPathObject(QOverlay):
     def refresh(self):
         self.labels.clear()
         for index, item in enumerate(self.items):
-            label = QLabel(item)
+            label = QLabel(item.value)
             label.setParent(self)
-            label.mousePressEvent = lambda x: self.clickItemEvent(label) if self.clickItemEvent is not None else None
             label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
             label.adjustSize()
             label.move(5, index * 25 + 5)
             self.labels.append(label)
         self._init_background(self.width(), len(self.items) * 25 + 5)
+
+    def get_action_from_label(self, label: QLabel):
+        return self.items[self.labels.index(label)]
+
+    def _get_label_from_y(self, y: int):
+        return self.labels[y // 30]
+
+    def mousePressEvent(self, event: QtGui.QMouseEvent):
+        label = self._get_label_from_y(event.pos().y())
+        if isinstance(label, QLabel):
+            action = self.get_action_from_label(label)
+            if self.clickItemEvent is not None:
+                self.clickItemEvent(action, self.path_object)
+
