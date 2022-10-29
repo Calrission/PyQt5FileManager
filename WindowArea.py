@@ -1,5 +1,5 @@
 from OverlayManager import QWidgetOverlayManager
-from Overlays import QActionPathObject, Action
+from Overlays import QActionPathObject, Action, QActionDeletePathObject, Result
 from Tab import *
 from QPathObjects import *
 from QSwitchImageButton import *
@@ -258,7 +258,7 @@ class MainWindowArea(WindowArea):
 
     def add_item_path_object(self, item: PathObject):
         view = self.create_view(item)
-        view.mouseDoubleClickEvent = lambda *args: self.get_func_action_click_path_object(item)(item)
+        view.mouseDoubleClickEvent = lambda event: self.get_func_action_click_path_object(item)(item)
         view.mousePressEvent = lambda event: self.click_mouse_item(event, item, view)
         self.add_item(view)
         return view
@@ -283,6 +283,31 @@ class MainWindowArea(WindowArea):
         self.window.dismiss_all()
         if action == Action.OPEN:
             self.get_func_action_click_path_object(item)(item)
+        elif action == Action.DELETE:
+            delete_overlay = QActionDeletePathObject(item, self.window)
+            delete_overlay.ok = lambda obj: self.click_action_delete_ok(delete_overlay, obj)
+            delete_overlay.cancel = lambda obj: self.click_action_delete_cancel(delete_overlay)
+            self.window.add_new_overlay(delete_overlay)
+            self.window.show_overlay(delete_overlay)
+
+    def click_action_delete_ok(self, overlay: QActionDeletePathObject, obj: PathObject):
+        self.window.dismiss_parent(overlay)
+        self.remove_path_object(obj)
+
+    def remove_path_object(self, path_object: PathObject):
+        path_object.delete()
+        widget = self.get_widget_path_object(path_object)
+        self.children.remove(widget)
+        widget.deleteLater()
+
+    def get_widget_path_object(self, path_object: PathObject):
+        for widget in [j for i in self.widgets for j in i]:
+            if widget.obj == path_object:
+                return widget
+        raise ValueError(f"Widget for {path_object} in MainAreaWindow not found")
+
+    def click_action_delete_cancel(self, overlay: QActionDeletePathObject):
+        self.window.dismiss_parent(overlay)
 
     def click_folder(self, item: Folder):
         r, c = self.index_path_object(item)

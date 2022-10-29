@@ -1,9 +1,12 @@
+import math
 from enum import Enum
 
-from PyQt5 import QtGui
+from PyQt5 import QtGui, Qt
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PathObjects import PathObject, TypePathObject, File, TypeFormatFile
 from QSwitchImageButton import QImageView
+from ConstValues import DELETE_OVERLAY_WIDTH, DELETE_OVERLAY_HEIGHT
 
 
 class QOverlay(QWidget):
@@ -52,6 +55,11 @@ class Action(Enum):
     INFO = "Свойства"
 
 
+class Result(Enum):
+    OK = "ok"
+    CANCEL = "cancel"
+
+
 class QActionPathObject(QOverlay):
 
     @staticmethod
@@ -91,7 +99,7 @@ class QActionPathObject(QOverlay):
         return self.items[self.labels.index(label)]
 
     def _get_label_from_y(self, y: int):
-        return self.labels[y // 30]
+        return self.labels[math.ceil(y / 30)]
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
         label = self._get_label_from_y(event.pos().y())
@@ -100,3 +108,44 @@ class QActionPathObject(QOverlay):
             if self.clickItemEvent is not None:
                 self.clickItemEvent(action, self.path_object)
 
+
+class QActionDeletePathObject(QOverlay):
+
+    def __init__(self, path_object: PathObject, parent: QWidget):
+        super().__init__(parent.width() // 2 - DELETE_OVERLAY_WIDTH // 2,
+                         parent.height() // 2 - DELETE_OVERLAY_HEIGHT // 2,
+                         parent)
+        self.path_object = path_object
+        self.ok = None
+        self.cancel = None
+
+    def initUI(self):
+        self.resize(300, 200)
+        txt = f"Вы действительно хотите удалить " \
+              f"{'папку' if self.path_object.type == TypePathObject.FOLDER else 'файл' if self.path_object.type == TypePathObject.FILE else ''} \"{self.path_object.name}\"?"
+        label = QLabel(txt)
+        label.setParent(self)
+        label.setFont(QFont("Arial", 14, QFont.Bold))
+        label.setWordWrap(True)
+        label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+        label.resize(self.width() - 20, self.height() - 60)
+        label.setAlignment(Qt.Qt.AlignHCenter)
+        label.move(10, 15)
+
+        ok = QLabel("Да")
+        ok.setParent(self)
+        ok.move(self.width() - 40, self.height() - 40)
+        ok.setFont(QFont("Arial", 12, QFont.Bold))
+        ok.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+        if self.ok is not None:
+            ok.mousePressEvent = lambda x: self.ok(self.path_object)
+
+        cancel = QLabel("Отмена")
+        cancel.setParent(self)
+        cancel.move(20, self.height() - 40)
+        cancel.setFont(QFont("Arial", 12, QFont.Bold))
+        cancel.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+        if self.cancel is not None:
+            cancel.mousePressEvent = lambda x: self.cancel(self.path_object)
+
+        self._init_background(self.width(), self.height())

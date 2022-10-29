@@ -1,3 +1,5 @@
+import traceback
+
 from PyQt5 import QtGui
 from WindowArea import *
 from Tab import *
@@ -25,10 +27,11 @@ class Main(QWidgetOverlayManager):
         self.initUI()
 
     def excepthook(self, exc_type, exc_value, exc_tb):
-        # message = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+        message = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
         # error_overlay = QOverlay()
         # self.add_new_overlay(error_overlay, self.manager.max() + 1)
-        pass
+        # pass
+        print(message)
 
     def setupWindow(self):
         self.setWindowIcon(QtGui.QIcon('files/icon.png'))

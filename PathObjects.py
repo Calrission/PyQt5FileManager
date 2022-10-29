@@ -1,4 +1,5 @@
 import os
+import shutil
 from os.path import exists
 from os import listdir
 from Exceptions import *
@@ -52,6 +53,9 @@ class PathObject:
     def refresh(self):
         pass
 
+    def delete(self):
+        pass
+
     def __repr__(self):
         return f"{self.__class__.__name__}; {self.path}; {self.type}; "
 
@@ -71,6 +75,9 @@ class Folder(PathObject):
         super().__init__(path, name)
         if self.name is None:
             self._detect_name_from_path()
+
+    def delete(self):
+        shutil.rmtree(self.path)
 
     def __check_type(self):
         if self.type != TypePathObject.FOLDER:
@@ -189,6 +196,9 @@ class File(PathObject):
         self.__check_type()
         self.__detect_format()
         self.__detect_type_file()
+
+    def delete(self):
+        os.remove(self.path)
 
     def __repr__(self):
         return super().__repr__() + f"{self.format};"
