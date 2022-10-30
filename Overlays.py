@@ -86,7 +86,7 @@ class QActionMenu(QOverlay):
         return self.items[self.labels.index(label)]
 
     def _get_label_from_y(self, y: int):
-        return self.labels[math.ceil(y / 30)]
+        return self.labels[math.floor(y / 25)]
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
         label = self._get_label_from_y(event.pos().y())
@@ -188,9 +188,6 @@ class QActionDeletePathObject(QActionAlertDialog):
         object_ = 'папку' if self.path_object.type == TypePathObject.FOLDER else \
             'файл' if self.path_object.type == TypePathObject.FILE else ''
         return f"Вы действительно хотите удалить {object_} \"{self.path_object.name}\"?"
-
-    def initUI(self):
-        super().initUI()
 
     def _click_positive(self):
         self._positive(self.path_object)
