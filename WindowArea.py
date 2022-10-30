@@ -338,6 +338,8 @@ class MainWindowArea(WindowArea):
     def set_new_content_tab(self):
         self.clear()
         [self.add_item_path_object(i) for i in self._tab.folder.children]
+        if not self._tab.folder.exist_permissions():
+            self.window.show_error(str(f"Отказ в доступе '{self._tab.folder.path}'"))
 
     def set_tab(self, tab: Tab):
         self._tab = tab

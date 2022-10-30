@@ -29,10 +29,7 @@ class Main(QWidgetOverlayManager):
 
     def excepthook(self, exc_type, exc_value, exc_tb):
         message = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-        error_overlay = QActionAlertDialog(str(exc_value), self)
-        error_overlay.set_positive("OK", lambda: self.dismiss_parent(error_overlay))
-        self.add_new_overlay(error_overlay, self.manager.max() + 1)
-        self.show_overlay(error_overlay)
+        self.show_error(str(exc_value))
         print(message)
 
     def setupWindow(self):

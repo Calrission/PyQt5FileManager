@@ -83,8 +83,14 @@ class Folder(PathObject):
         if self.type != TypePathObject.FOLDER:
             raise NotFolderException(self)
 
+    def exist_permissions(self):
+        try:
+            listdir(self.path)
+            return True
+        except PermissionError:
+            return False
+
     def refresh(self):
-        super().refresh()
         self.__check_type()
         self.__detect_children()
 
@@ -94,10 +100,16 @@ class Folder(PathObject):
         return SLASH.join(self.path.split(SLASH)[:-1])
 
     def __detect_children(self):
-        lst = listdir(self.path)
+        try:
+            lst = listdir(self.path)
+        except PermissionError:
+            lst = []
         folders = [Folder(self.path, folder) for folder in lst if self.isdir(folder)]
         files = [File(self.path, file) for file in lst if self.isfile(file)]
-        self.children = folders + files
+        self._set_content(folders + files, folders, files)
+
+    def _set_content(self, children: list, folders: list, files: list):
+        self.children = children
         self.children_folders = folders
         self.children_files = files
 

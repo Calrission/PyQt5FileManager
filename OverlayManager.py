@@ -1,8 +1,7 @@
-import enum
-
+from enum import Enum
 from PyQt5.QtWidgets import QWidget, QLabel
 from ConstValues import WIDTH, HEIGHT
-from Overlays import QOverlay
+from Overlays import QOverlay, QActionAlertDialog
 from UtilsVisual import UtilsVisual
 
 
@@ -158,7 +157,7 @@ class OverlayManager:
         return lst
 
 
-class ModeOverlayManager(enum.Enum):
+class ModeOverlayManager(Enum):
     MULTY = 0
     SINGLE = 1
 
@@ -230,3 +229,9 @@ class QWidgetOverlayManager(QWidget):
     def _show_background(self):
         self.background_overlay.raise_()
         self.background_overlay.show()
+
+    def show_error(self, message):
+        error_overlay = QActionAlertDialog(message, self)
+        error_overlay.set_positive("OK", lambda: self.dismiss_parent(error_overlay))
+        self.add_new_overlay(error_overlay, self.manager.max() + 1)
+        self.show_overlay(error_overlay)
