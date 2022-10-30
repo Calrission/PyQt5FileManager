@@ -1,5 +1,4 @@
 import traceback
-
 from PyQt5 import QtGui
 from WindowArea import *
 from Tab import *
