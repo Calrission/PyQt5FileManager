@@ -141,21 +141,23 @@ class QActionAlertDialog(QOverlay):
         label.setAlignment(Qt.Qt.AlignHCenter)
         label.move(10, 15)
 
-        positive = QLabel(self._positive_txt)
-        positive.setParent(self)
-        positive.move(self.width() - 40, self.height() - 40)
-        positive.setFont(QFont("Arial", 12, QFont.Bold))
-        positive.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        if self.pos is not None:
-            positive.mousePressEvent = lambda x: self._click_positive()
+        if self._positive_txt is not None:
+            positive = QLabel(self._positive_txt)
+            positive.setParent(self)
+            positive.move(self.width() - 40, self.height() - 40)
+            positive.setFont(QFont("Arial", 12, QFont.Bold))
+            positive.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            if self._positive is not None:
+                positive.mousePressEvent = lambda x: self._click_positive()
 
-        cancel = QLabel(self._negative_txt)
-        cancel.setParent(self)
-        cancel.move(20, self.height() - 40)
-        cancel.setFont(QFont("Arial", 12, QFont.Bold))
-        cancel.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        if self._negative is not None:
-            cancel.mousePressEvent = lambda x: self._click_negative()
+        if self._negative_txt is not None:
+            cancel = QLabel(self._negative_txt)
+            cancel.setParent(self)
+            cancel.move(20, self.height() - 40)
+            cancel.setFont(QFont("Arial", 12, QFont.Bold))
+            cancel.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            if self._negative is not None:
+                cancel.mousePressEvent = lambda x: self._click_negative()
 
         super().initUI()
 
@@ -194,5 +196,3 @@ class QActionDeletePathObject(QActionAlertDialog):
 
     def _click_negative(self):
         self._negative(self.path_object)
-
-

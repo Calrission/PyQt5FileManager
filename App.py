@@ -1,5 +1,7 @@
 import traceback
 from PyQt5 import QtGui
+
+from Overlays import QActionAlertDialog
 from WindowArea import *
 from Tab import *
 from MouseAreaListener import MouseAreaListener
@@ -27,9 +29,10 @@ class Main(QWidgetOverlayManager):
 
     def excepthook(self, exc_type, exc_value, exc_tb):
         message = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-        # error_overlay = QOverlay()
-        # self.add_new_overlay(error_overlay, self.manager.max() + 1)
-        # pass
+        error_overlay = QActionAlertDialog(str(exc_value), self)
+        error_overlay.set_positive("OK", lambda: self.dismiss_parent(error_overlay))
+        self.add_new_overlay(error_overlay, self.manager.max() + 1)
+        self.show_overlay(error_overlay)
         print(message)
 
     def setupWindow(self):

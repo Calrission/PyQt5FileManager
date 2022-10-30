@@ -40,9 +40,13 @@ class LevelsOverlays:
             self.move(overlay, new_level)
 
     def get_max_level(self):
+        if len(self._levels.keys()) == 0:
+            return 0
         return max(list(self._levels.keys()))
 
     def get_min_level(self):
+        if len(self._levels.keys()) == 0:
+            return 0
         return min(list(self._levels.keys()))
 
     def remove_overlay(self, overlay: QOverlay):
