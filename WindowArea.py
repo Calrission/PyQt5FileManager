@@ -284,9 +284,9 @@ class MainWindowArea(WindowArea):
         if action == Action.OPEN:
             self.get_func_action_click_path_object(item)(item)
         elif action == Action.DELETE:
-            delete_overlay = QActionDeletePathObject(item, self.window)
-            delete_overlay.ok = lambda obj: self.click_action_delete_ok(delete_overlay, obj)
-            delete_overlay.cancel = lambda obj: self.click_action_delete_cancel(delete_overlay)
+            delete_overlay = QActionDeletePathObject(item, self.window,
+                                                     lambda obj: self.click_action_delete_ok(delete_overlay, obj),
+                                                     lambda obj: self.click_action_delete_cancel(delete_overlay))
             self.window.add_new_overlay(delete_overlay)
             self.window.show_overlay(delete_overlay)
 

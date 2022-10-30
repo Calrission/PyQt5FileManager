@@ -1,6 +1,5 @@
 import math
 from enum import Enum
-
 from PyQt5 import QtGui, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
@@ -36,7 +35,7 @@ class QOverlay(QWidget):
         self.move_calc_x_y()
 
     def initUI(self):
-        pass
+        self._init_background(self.width(), self.height())
 
     def _init_background(self, w: int, h: int):
         self.image_background = QImageView(self, path="files/back_tag_select.png")
@@ -70,7 +69,6 @@ class QActionMenu(QOverlay):
         self.clickItemEvent = None
 
     def initUI(self):
-        super().initUI()
         self.refresh()
 
     def refresh(self):
@@ -121,21 +119,20 @@ class QActionPathObject(QActionMenu):
         self.clickItemEvent(action, self.path_object)
 
 
-class QActionDeletePathObject(QOverlay):
-
-    def __init__(self, path_object: PathObject, parent: QWidget):
+class QActionAlertDialog(QOverlay):
+    def __init__(self, message: str, parent: QWidget):
         super().__init__(parent.width() // 2 - DELETE_OVERLAY_WIDTH // 2,
                          parent.height() // 2 - DELETE_OVERLAY_HEIGHT // 2,
                          parent)
-        self.path_object = path_object
-        self.ok = None
-        self.cancel = None
+        self._positive = None
+        self._positive_txt = None
+        self.message = message
+        self._negative = None
+        self._negative_txt = None
 
     def initUI(self):
         self.resize(300, 200)
-        txt = f"Вы действительно хотите удалить " \
-              f"{'папку' if self.path_object.type == TypePathObject.FOLDER else 'файл' if self.path_object.type == TypePathObject.FILE else ''} \"{self.path_object.name}\"?"
-        label = QLabel(txt)
+        label = QLabel(self.message)
         label.setParent(self)
         label.setFont(QFont("Arial", 14, QFont.Bold))
         label.setWordWrap(True)
@@ -144,20 +141,61 @@ class QActionDeletePathObject(QOverlay):
         label.setAlignment(Qt.Qt.AlignHCenter)
         label.move(10, 15)
 
-        ok = QLabel("Да")
-        ok.setParent(self)
-        ok.move(self.width() - 40, self.height() - 40)
-        ok.setFont(QFont("Arial", 12, QFont.Bold))
-        ok.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        if self.ok is not None:
-            ok.mousePressEvent = lambda x: self.ok(self.path_object)
+        positive = QLabel(self._positive_txt)
+        positive.setParent(self)
+        positive.move(self.width() - 40, self.height() - 40)
+        positive.setFont(QFont("Arial", 12, QFont.Bold))
+        positive.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+        if self.pos is not None:
+            positive.mousePressEvent = lambda x: self._click_positive()
 
-        cancel = QLabel("Отмена")
+        cancel = QLabel(self._negative_txt)
         cancel.setParent(self)
         cancel.move(20, self.height() - 40)
         cancel.setFont(QFont("Arial", 12, QFont.Bold))
         cancel.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        if self.cancel is not None:
-            cancel.mousePressEvent = lambda x: self.cancel(self.path_object)
+        if self._negative is not None:
+            cancel.mousePressEvent = lambda x: self._click_negative()
 
-        self._init_background(self.width(), self.height())
+        super().initUI()
+
+    def _click_positive(self):
+        self._positive()
+
+    def _click_negative(self):
+        self._negative()
+
+    def set_negative(self, txt: str, click):
+        self._negative_txt = txt
+        self._negative = click
+
+    def set_positive(self, txt: str, click):
+        self._positive_txt = txt
+        self._positive = click
+
+
+class QActionDeletePathObject(QActionAlertDialog):
+    def __init__(self, path_object: PathObject, parent: QWidget, click_ok, click_cancel):
+        self.path_object = path_object
+        message = self._calc_message()
+        super().__init__(message, parent)
+        self._negative_txt = "Cancel"
+        self._positive_txt = "OK"
+        self._positive = click_ok
+        self._negative = click_cancel
+
+    def _calc_message(self) -> str:
+        object_ = 'папку' if self.path_object.type == TypePathObject.FOLDER else \
+            'файл' if self.path_object.type == TypePathObject.FILE else ''
+        return f"Вы действительно хотите удалить {object_} \"{self.path_object.name}\"?"
+
+    def initUI(self):
+        super().initUI()
+
+    def _click_positive(self):
+        self._positive(self.path_object)
+
+    def _click_negative(self):
+        self._negative(self.path_object)
+
+
