@@ -296,9 +296,8 @@ class MainWindowArea(WindowArea):
 
     def remove_path_object(self, path_object: PathObject):
         path_object.delete()
-        widget = self.get_widget_path_object(path_object)
-        self.children.remove(widget)
-        widget.deleteLater()
+        self._tab.folder.refresh()
+        self.refresh_content()
 
     def get_widget_path_object(self, path_object: PathObject):
         for widget in [j for i in self.widgets for j in i]:
@@ -335,7 +334,7 @@ class MainWindowArea(WindowArea):
                     return i_r, i_c
         raise ValueError(f"{widget} not found in MainAreaWindow")
 
-    def set_new_content_tab(self):
+    def refresh_content(self):
         self.clear()
         [self.add_item_path_object(i) for i in self._tab.folder.children]
         if not self._tab.folder.exist_permissions():
@@ -343,8 +342,8 @@ class MainWindowArea(WindowArea):
 
     def set_tab(self, tab: Tab):
         self._tab = tab
-        self._tab.add_on_change_folder(lambda x: self.set_new_content_tab())
-        self.set_new_content_tab()
+        self._tab.add_on_change_folder(lambda x: self.refresh_content())
+        self.refresh_content()
 
     def get_tab(self):
         return self._tab
