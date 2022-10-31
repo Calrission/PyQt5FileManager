@@ -211,7 +211,7 @@ class QWidgetOverlayManager(QWidget):
 
     def _click_background(self):
         for overlay in self.active_overlays:
-            overlay.hide()
+            self.dismiss_all()
         self.background_overlay.hide()
 
     def refresh(self):
