@@ -65,6 +65,10 @@ class PathObject:
     def __str__(self):
         return self.__repr__()
 
+    @staticmethod
+    def check_exist_path(path: str):
+        return os.path.exists(path)
+
 
 class Folder(PathObject):
     def __init__(self, path: str, name: str = None):
@@ -162,6 +166,19 @@ class Folder(PathObject):
         if short.replace(START_TAB, SLASH).count(SLASH) >= 2:
             short = SLASH.join(short.split(SLASH)[-2:])
         return short
+
+    def create_child_folder(self, folder_name: str):
+        new_folder_path = self.add_to_path(folder_name)
+        if not PathObject.check_exist(new_folder_path):
+            os.makedirs(new_folder_path)
+
+    def create_child_file(self, file_name: str):
+        new_file_path = self.add_to_path(file_name)
+        if not PathObject.check_exist_path(new_file_path):
+            open(new_file_path, 'a').close()
+
+    def check_exist_child(self, child_name: str):
+        return child_name in [str(i.name) for i in self.children]
 
 
 class File(PathObject):

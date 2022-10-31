@@ -39,6 +39,7 @@ class QOverlay(QWidget):
 
     def _init_background(self, w: int, h: int):
         self.image_background = QImageView(self, path="files/back_tag_select.png")
+        self.image_background.mousePressEvent = lambda x: None
         self.image_background.resize(w, h)
         self.image_background.lower()
 
@@ -146,18 +147,19 @@ class QActionAlertDialog(QOverlay):
         if self._positive_txt is not None:
             positive = QLabel(self._positive_txt)
             positive.setParent(self)
-            positive.move(self.width() - 40, self.height() - 40)
             positive.setFont(QFont("Arial", 12, QFont.Bold))
             positive.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            positive.show()
+            positive.move(self.width() - positive.width() - 20, self.height() - 40)
             if self._positive is not None:
                 positive.mousePressEvent = lambda x: self._click_positive()
 
         if self._negative_txt is not None:
             cancel = QLabel(self._negative_txt)
             cancel.setParent(self)
-            cancel.move(20, self.height() - 40)
             cancel.setFont(QFont("Arial", 12, QFont.Bold))
             cancel.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            cancel.move(20, self.height() - 40)
             if self._negative is not None:
                 cancel.mousePressEvent = lambda x: self._click_negative()
 
@@ -200,23 +202,35 @@ class QActionDeletePathObject(QActionAlertDialog):
         self._negative(self.path_object)
 
 
-class QActionRenamePathObject(QActionAlertDialog):
-    def __init__(self, parent: QWidget, path_object: PathObject, positive, negative):
-        super().__init__("Переименовать", parent)
-        self.path_object = path_object
-        self._positive_txt = "OK"
-        self._positive = positive
-        self._negative = negative
-        self._negative_txt = "Отмена"
+class QActionLineEdit(QActionAlertDialog):
+    def __init__(self, parent: QWidget, message: str, default_text=""):
+        super().__init__(message, parent)
+        self.default_text = default_text
         self.new_name = None
 
     def initUI(self):
         super().initUI()
         y = self._label.y() + self._label.height() + 20
         self.new_name = QLineEdit(self)
-        self.new_name.setText(self.path_object.name)
+        self.new_name.setText(self.default_text)
         self.new_name.resize(self.width() - 20, 40)
         self.new_name.move(10, y)
+
+    def _click_positive(self):
+        self._positive(self.new_name.text())
+
+    def _click_negative(self):
+        self._negative()
+
+
+class QActionRenamePathObject(QActionLineEdit):
+    def __init__(self, parent: QWidget, path_object: PathObject, positive, negative):
+        super().__init__(parent, "Переименовать", path_object.name)
+        self.path_object = path_object
+        self._positive_txt = "OK"
+        self._positive = positive
+        self._negative = negative
+        self._negative_txt = "Отмена"
 
     def _click_positive(self):
         self._positive(self.new_name.text(), self.path_object)

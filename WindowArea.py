@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QMouseEvent
 from OverlayManager import QWidgetOverlayManager
-from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay, QActionMenu
+from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay, QActionMenu, \
+    QActionLineEdit, QActionAlertDialog
 from Tab import *
 from QPathObjects import *
 from QSwitchImageButton import *
@@ -151,7 +152,7 @@ class TabWindowArea(WindowArea):
     def __init__(self, window: QWidgetOverlayManager,
                  on_add_tab, on_select_tab,
                  on_remove_tab, on_unselect_tab,
-                 on_change_tab,):
+                 on_change_tab, ):
         super().__init__(window, area=Areas.TabPanel)
 
         self.on_remove_tab = on_remove_tab
@@ -287,17 +288,20 @@ class MainWindowArea(WindowArea):
         self.window.add_new_overlay(overlay)
         self.window.show_overlay(overlay)
 
-    def eventItemOverlayPathObject(self, action: Action, item: PathObject):
+    def eventItemOverlayPathObject(self, action: Action, *args):
         self.window.dismiss_all()
         if action == Action.OPEN:
+            item = args[0]
             self.get_func_action_click_path_object(item)(item)
         elif action == Action.DELETE:
+            item = args[0]
             delete_overlay = QActionDeletePathObject(item, self.window,
                                                      lambda obj: self.click_action_delete_ok(delete_overlay, obj),
                                                      lambda obj: self.click_action_cancel_overlay(delete_overlay))
             self.window.add_new_overlay(delete_overlay)
             self.window.show_overlay(delete_overlay)
         elif action == Action.RENAME:
+            item = args[0]
             rename_overlay = QActionRenamePathObject(
                 self.window, item,
                 positive=lambda new_name, obj: self.click_action_rename(rename_overlay, new_name, obj),
@@ -305,6 +309,24 @@ class MainWindowArea(WindowArea):
             )
             self.window.add_new_overlay(rename_overlay)
             self.window.show_overlay(rename_overlay)
+        elif action == Action.CREATE_FILE:
+            set_name = QActionLineEdit(self.window, "Введите название для нового файла")
+            set_name.set_negative("Отмена", lambda: self.window.dismiss_parent(set_name))
+            set_name.set_positive("Готово", lambda name: self.click_action_create_file(set_name, name))
+            self.window.add_new_overlay(set_name)
+            self.window.show_overlay(set_name)
+        elif action == Action.CREATE_FOLDER:
+            pass
+
+    def click_action_create_file(self, overlay: QOverlay, new_file: str):
+        if not self._tab.folder.check_exist_child(new_file):
+            self._tab.folder.create_child_file(new_file)
+            self.window.dismiss_parent(overlay)
+            self.refresh_content()
+        else:
+            message = QActionAlertDialog("Файл с таким именем уже создан", self.window)
+            self.window.add_new_overlay(message)
+            self.window.show_overlay(message)
 
     def click_action_rename(self, overlay: QActionRenamePathObject, new_name: str, obj: PathObject):
         self.rename_path_object(new_name, obj)
@@ -377,6 +399,7 @@ class MainWindowArea(WindowArea):
     def mousePressEvent(self, event: QMouseEvent):
         menu_overlay = QActionMenu(event.x(), event.y(), self.window,
                                    [Action.CREATE_FILE, Action.CREATE_FOLDER])
+        menu_overlay.clickItemEvent = self.eventItemOverlayPathObject
         self.window.add_new_overlay(menu_overlay)
         self.window.show_overlay(menu_overlay)
 
