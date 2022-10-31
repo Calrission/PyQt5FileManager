@@ -13,6 +13,13 @@ class TypePathObject(Enum):
     FILE = "file"
     UNKNOWN = "unknown"
 
+    def to_rus_str(self):
+        if self == TypePathObject.FOLDER:
+            return "Папка"
+        elif self == TypePathObject.FILE:
+            return "Файл"
+        return self.value
+
 
 class TypeFormatFile(Enum):
     MEDIA = "media"
@@ -169,7 +176,7 @@ class Folder(PathObject):
 
     def create_child_folder(self, folder_name: str):
         new_folder_path = self.add_to_path(folder_name)
-        if not PathObject.check_exist(new_folder_path):
+        if not PathObject.check_exist_path(new_folder_path):
             os.makedirs(new_folder_path)
 
     def create_child_file(self, file_name: str):

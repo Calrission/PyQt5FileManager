@@ -309,22 +309,27 @@ class MainWindowArea(WindowArea):
             )
             self.window.add_new_overlay(rename_overlay)
             self.window.show_overlay(rename_overlay)
-        elif action == Action.CREATE_FILE:
-            set_name = QActionLineEdit(self.window, "Введите название для нового файла")
+        elif action == Action.CREATE_FILE or action == Action.CREATE_FOLDER:
+            txt = f"Введите название для {'нового файла' if Action.CREATE_FILE else 'новой папки'}"
+            type_obj = TypePathObject.FILE if action == Action.CREATE_FILE else TypePathObject.FOLDER
+            set_name = QActionLineEdit(self.window, txt)
             set_name.set_negative("Отмена", lambda: self.window.dismiss_parent(set_name))
-            set_name.set_positive("Готово", lambda name: self.click_action_create_file(set_name, name))
+            set_name.set_positive("Готово", lambda name: self.click_action_create_path_object(set_name, name, type_obj))
             self.window.add_new_overlay(set_name)
             self.window.show_overlay(set_name)
-        elif action == Action.CREATE_FOLDER:
-            pass
 
-    def click_action_create_file(self, overlay: QOverlay, new_file: str):
-        if not self._tab.folder.check_exist_child(new_file):
-            self._tab.folder.create_child_file(new_file)
+    def click_action_create_path_object(self, overlay: QOverlay,
+                                        new_name: str,
+                                        type_obj: TypePathObject = TypePathObject.FILE):
+        if not self._tab.folder.check_exist_child(new_name):
+            if type_obj == TypePathObject.FILE:
+                self._tab.folder.create_child_file(new_name)
+            if type_obj == TypePathObject.FOLDER:
+                self._tab.folder.create_child_folder(new_name)
             self.window.dismiss_parent(overlay)
             self.refresh_content()
         else:
-            message = QActionAlertDialog("Файл с таким именем уже создан", self.window)
+            message = QActionAlertDialog(f"{type_obj.to_rus_str()} с таким именем уже создан", self.window)
             self.window.add_new_overlay(message)
             self.window.show_overlay(message)
 
