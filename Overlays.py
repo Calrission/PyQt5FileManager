@@ -220,3 +220,6 @@ class QActionRenamePathObject(QActionAlertDialog):
 
     def _click_positive(self):
         self._positive(self.new_name.text(), self.path_object)
+
+    def _click_negative(self):
+        self._negative(self.path_object)

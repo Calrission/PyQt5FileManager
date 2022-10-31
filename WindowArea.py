@@ -128,6 +128,10 @@ class WindowArea:
         for widget in self.children:
             widget.move(widget.x() + delta_x, widget.y())
 
+    def delta_wheel_move(self):
+        for widget in self.children:
+            widget.move(widget.x() + self._delta_wheel_x, widget.y() + self._delta_wheel_y)
+
     def deleteLaterWidget(self, widget: QWidget):
         widget.deleteLater()
         if widget in self.children:
@@ -352,6 +356,7 @@ class MainWindowArea(WindowArea):
 
     def refresh_content(self):
         self.clear()
+        self._tab.folder.refresh()
         [self.add_item_path_object(i) for i in self._tab.folder.children]
         if not self._tab.folder.exist_permissions():
             self.window.show_error(str(f"Отказ в доступе '{self._tab.folder.path}'"))
