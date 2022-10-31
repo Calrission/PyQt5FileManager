@@ -129,17 +129,19 @@ class QActionAlertDialog(QOverlay):
         self.message = message
         self._negative = None
         self._negative_txt = None
+        self._label = None
 
     def initUI(self):
         self.resize(300, 200)
-        label = QLabel(self.message)
-        label.setParent(self)
-        label.setFont(QFont("Arial", 14, QFont.Bold))
-        label.setWordWrap(True)
-        label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
-        label.resize(self.width() - 20, self.height() - 60)
-        label.setAlignment(Qt.Qt.AlignHCenter)
-        label.move(10, 15)
+        self._label = QLabel(self.message)
+        self._label.setParent(self)
+        self._label.setFont(QFont("Arial", 14, QFont.Bold))
+        self._label.setWordWrap(True)
+        self._label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+        self._label.adjustSize()
+        self._label.resize(self.width() - 20, self._label.height())
+        self._label.setAlignment(Qt.Qt.AlignHCenter)
+        self._label.move(10, 15)
 
         if self._positive_txt is not None:
             positive = QLabel(self._positive_txt)
@@ -196,3 +198,25 @@ class QActionDeletePathObject(QActionAlertDialog):
 
     def _click_negative(self):
         self._negative(self.path_object)
+
+
+class QActionRenamePathObject(QActionAlertDialog):
+    def __init__(self, parent: QWidget, path_object: PathObject, positive, negative):
+        super().__init__("Переименовать", parent)
+        self.path_object = path_object
+        self._positive_txt = "OK"
+        self._positive = positive
+        self._negative = negative
+        self._negative_txt = "Отмена"
+        self.new_name = None
+
+    def initUI(self):
+        super().initUI()
+        y = self._label.y() + self._label.height() + 20
+        self.new_name = QLineEdit(self)
+        self.new_name.setText(self.path_object.name)
+        self.new_name.resize(self.width() - 20, 40)
+        self.new_name.move(10, y)
+
+    def _click_positive(self):
+        self._positive(self.new_name.text(), self.path_object)

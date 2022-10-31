@@ -56,6 +56,9 @@ class PathObject:
     def delete(self):
         pass
 
+    def rename(self, new_name: str):
+        os.rename(self.path, new_name)
+
     def __repr__(self):
         return f"{self.__class__.__name__}; {self.path}; {self.type}; "
 

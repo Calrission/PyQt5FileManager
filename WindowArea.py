@@ -1,5 +1,5 @@
 from OverlayManager import QWidgetOverlayManager
-from Overlays import QActionPathObject, Action, QActionDeletePathObject, Result
+from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay
 from Tab import *
 from QPathObjects import *
 from QSwitchImageButton import *
@@ -286,9 +286,21 @@ class MainWindowArea(WindowArea):
         elif action == Action.DELETE:
             delete_overlay = QActionDeletePathObject(item, self.window,
                                                      lambda obj: self.click_action_delete_ok(delete_overlay, obj),
-                                                     lambda obj: self.click_action_delete_cancel(delete_overlay))
+                                                     lambda obj: self.click_action_cancel_overlay(delete_overlay))
             self.window.add_new_overlay(delete_overlay)
             self.window.show_overlay(delete_overlay)
+        elif action == Action.RENAME:
+            rename_overlay = QActionRenamePathObject(
+                self.window, item,
+                positive=lambda new_name, obj: self.click_action_rename(rename_overlay, new_name, obj),
+                negative=lambda obj: self.click_action_cancel_overlay(rename_overlay)
+            )
+            self.window.add_new_overlay(rename_overlay)
+            self.window.show_overlay(rename_overlay)
+
+    def click_action_rename(self, overlay: QActionRenamePathObject, new_name: str, obj: PathObject):
+        self.rename_path_object(new_name, obj)
+        self.window.dismiss_parent(overlay)
 
     def click_action_delete_ok(self, overlay: QActionDeletePathObject, obj: PathObject):
         self.window.dismiss_parent(overlay)
@@ -305,7 +317,7 @@ class MainWindowArea(WindowArea):
                 return widget
         raise ValueError(f"Widget for {path_object} in MainAreaWindow not found")
 
-    def click_action_delete_cancel(self, overlay: QActionDeletePathObject):
+    def click_action_cancel_overlay(self, overlay: QOverlay):
         self.window.dismiss_parent(overlay)
 
     def click_folder(self, item: Folder):
@@ -347,6 +359,11 @@ class MainWindowArea(WindowArea):
 
     def get_tab(self):
         return self._tab
+
+    def rename_path_object(self, new_name, obj: PathObject):
+        obj.rename(self._tab.folder.add_to_path(new_name))
+        self._tab.folder.refresh()
+        self.refresh_content()
 
 
 class ButtonsAreaWindow(WindowArea):
