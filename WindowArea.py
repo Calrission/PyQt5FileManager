@@ -1,3 +1,6 @@
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.uic.properties import QtGui
+
 from OverlayManager import QWidgetOverlayManager
 from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay
 from Tab import *
@@ -137,6 +140,9 @@ class WindowArea:
 
     def set_color_background_rgb(self, color: tuple):
         UtilsVisual.set_background_color_label(self.background, color)
+
+    def mousePressEvent(self, event: QMouseEvent):
+        print(f"click to {self.__class__.__name__}")
 
 
 class TabWindowArea(WindowArea):

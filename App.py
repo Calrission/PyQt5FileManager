@@ -1,10 +1,8 @@
 import traceback
-from PyQt5 import QtGui
-
-from Overlays import QActionAlertDialog
 from WindowArea import *
 from Tab import *
 from MouseAreaListener import MouseAreaListener
+from PyQt5.QtGui import QMouseEvent, QIcon
 
 
 class Main(QWidgetOverlayManager):
@@ -33,7 +31,7 @@ class Main(QWidgetOverlayManager):
         print(message)
 
     def setupWindow(self):
-        self.setWindowIcon(QtGui.QIcon('files/icon.png'))
+        self.setWindowIcon(QIcon('files/icon.png'))
         self.setGeometry(0, 0, WIDTH, HEIGHT)
         self.setWindowTitle(TITLE)
         self.setMinimumWidth(MIN_WIDTH)
@@ -56,7 +54,7 @@ class Main(QWidgetOverlayManager):
                                                  click_next_history=self.click_next_history,
                                                  click_setting=self.click_setting)
 
-        self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main])
+        self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main, self.history_buttons])
 
     def on_add_tab(self, tab: Tab):
         pass
@@ -98,7 +96,10 @@ class Main(QWidgetOverlayManager):
         self.tabs.tab_manager.add_new_tab(START_TAB)
         self.sync_history_buttons()
 
-    def mouseMoveEvent(self, event):
+    def mousePressEvent(self, event):
+        self.mouse_listener.get_area_last_detect_mouse().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event: QMouseEvent):
         self.mouse_listener.mouseMoveEvent(event)
 
     def wheelEvent(self, event):

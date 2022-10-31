@@ -9,8 +9,8 @@ class MouseAreaListener:
     def mouseMoveEvent(self, event):
         self.last_x_y = (event.x(), event.y())
 
-    def get_area_last_detect_mouse(self):
+    def get_area_last_detect_mouse(self) -> WindowArea:
         for area in self.areas:
             if (area.start_x <= self.last_x_y[0] <= area.end_x) and (area.start_y <= self.last_x_y[1] <= area.end_y):
                 return area
-        return None
+        raise ValueError("get area last detect mouse not found")
