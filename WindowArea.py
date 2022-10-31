@@ -1,8 +1,6 @@
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.uic.properties import QtGui
-
 from OverlayManager import QWidgetOverlayManager
-from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay
+from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay, QActionMenu
 from Tab import *
 from QPathObjects import *
 from QSwitchImageButton import *
@@ -370,6 +368,12 @@ class MainWindowArea(WindowArea):
         obj.rename(self._tab.folder.add_to_path(new_name))
         self._tab.folder.refresh()
         self.refresh_content()
+
+    def mousePressEvent(self, event: QMouseEvent):
+        menu_overlay = QActionMenu(event.x(), event.y(), self.window,
+                                   [Action.CREATE_FILE, Action.CREATE_FOLDER])
+        self.window.add_new_overlay(menu_overlay)
+        self.window.show_overlay(menu_overlay)
 
 
 class ButtonsAreaWindow(WindowArea):

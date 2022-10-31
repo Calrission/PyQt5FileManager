@@ -1,4 +1,9 @@
 import os
+
+#
+#   Скрипт для быстрого подсчёта количсетво строк в .py файлах проекта
+#
+
 lst = [i for i in os.listdir(os.path.realpath("/".join(str(__file__).split("/")[0:-1])))
        if os.path.isfile(i) and i != "count_lines.py" and ".py" in i]
 count = 0
