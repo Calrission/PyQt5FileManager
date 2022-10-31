@@ -5,7 +5,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PathObjects import PathObject, TypePathObject, File, TypeFormatFile
 from QSwitchImageButton import QImageView
-from ConstValues import DELETE_OVERLAY_WIDTH, DELETE_OVERLAY_HEIGHT
+from ConstValues import ALERT_OVERLAY_WIDTH, ALERT_OVERLAY_HEIGHT
 
 
 class QOverlay(QWidget):
@@ -121,8 +121,8 @@ class QActionPathObject(QActionMenu):
 
 class QActionAlertDialog(QOverlay):
     def __init__(self, message: str, parent: QWidget):
-        super().__init__(parent.width() // 2 - DELETE_OVERLAY_WIDTH // 2,
-                         parent.height() // 2 - DELETE_OVERLAY_HEIGHT // 2,
+        super().__init__(parent.width() // 2 - ALERT_OVERLAY_WIDTH // 2,
+                         parent.height() // 2 - ALERT_OVERLAY_HEIGHT // 2,
                          parent)
         self._positive = None
         self._positive_txt = None
