@@ -103,16 +103,17 @@ class Main(QWidgetOverlayManager):
         self.mouse_listener.mouseMoveEvent(event)
 
     def wheelEvent(self, event):
-        angle = event.angleDelta().y()
-        area = self.mouse_listener.get_area_last_detect_mouse()
-        if isinstance(area, MainWindowArea):
-            px_y = int(angle * ANGLE_WHEEL_TO_PX)
-            if (angle < 0 and area.get_need_wheel_down()) or (angle > 0 and area.get_need_wheel_top()):
-                area.delta_change_y_children(px_y)
-                self.tabs.raise_()
-                self.history_buttons.raise_()
-        elif isinstance(area, TabWindowArea):
-            px_x = int(angle * ANGLE_WHEEL_TO_PX)
-            if (angle < 0 and area.get_need_wheel_right()) or (angle > 0 and area.get_need_wheel_left()):
-                area.delta_change_x_children(px_x)
-                self.history_buttons.raise_()
+        if not self.is_active():
+            angle = event.angleDelta().y()
+            area = self.mouse_listener.get_area_last_detect_mouse()
+            if isinstance(area, MainWindowArea):
+                px_y = int(angle * ANGLE_WHEEL_TO_PX)
+                if (angle < 0 and area.get_need_wheel_down()) or (angle > 0 and area.get_need_wheel_top()):
+                    area.delta_change_y_children(px_y)
+                    self.tabs.raise_()
+                    self.history_buttons.raise_()
+            elif isinstance(area, TabWindowArea):
+                px_x = int(angle * ANGLE_WHEEL_TO_PX)
+                if (angle < 0 and area.get_need_wheel_right()) or (angle > 0 and area.get_need_wheel_left()):
+                    area.delta_change_x_children(px_x)
+                    self.history_buttons.raise_()

@@ -235,3 +235,6 @@ class QWidgetOverlayManager(QWidget):
         error_overlay.set_positive("OK", lambda: self.dismiss_parent(error_overlay))
         self.add_new_overlay(error_overlay, self.manager.max() + 1)
         self.show_overlay(error_overlay)
+
+    def is_active(self):
+        return len(self.active_overlays) != 0
