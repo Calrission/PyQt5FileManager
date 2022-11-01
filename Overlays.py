@@ -8,11 +8,10 @@ from QSwitchImageButton import QImageView
 from ConstValues import ALERT_OVERLAY_WIDTH, ALERT_OVERLAY_HEIGHT
 
 
-class QOverlay(QWidget):
+class QSmartWidget(QWidget):
     def __init__(self, x: int, y: int, parent: QWidget):
         self.x = x
         self.y = y
-        self.image_background = None
         super().__init__(parent)
 
     def _calc_x_y(self, x, y):
@@ -20,19 +19,31 @@ class QOverlay(QWidget):
         new_y = y if y + self.height() <= self.parent().height() else y - self.height()
         self.x, self.y = new_x, new_y
 
-    def move_calc_x_y(self):
-        self._calc_x_y(self.x, self.y)
-        self.move(self.x, self.y)
-
     def show(self) -> None:
         self.initUI()
         self.move(self.x, self.y)
         self.raise_()
         super().show()
 
+    def initUI(self):
+        pass
+
+    def move_calc_x_y(self):
+        self._calc_x_y(self.x, self.y)
+        self.move(self.x, self.y)
+
     def resizeEvent(self, a0: QtGui.QResizeEvent) -> None:
         super().resizeEvent(a0)
         self.move_calc_x_y()
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.x=}, {self.y=})"
+
+
+class QOverlay(QSmartWidget):
+    def __init__(self, x: int, y: int, parent: QWidget):
+        self.image_background = None
+        super().__init__(x, y, parent)
 
     def initUI(self):
         self._init_background(self.width(), self.height())
@@ -42,9 +53,6 @@ class QOverlay(QWidget):
         self.image_background.mousePressEvent = lambda x: None
         self.image_background.resize(w, h)
         self.image_background.lower()
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.x=}, {self.y=})"
 
 
 class Action(Enum):
