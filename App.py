@@ -1,13 +1,17 @@
 import traceback
+
+from PreviewsWidgets import PreviewsManager
 from WindowArea import *
 from Tab import *
 from MouseAreaListener import MouseAreaListener
 from PyQt5.QtGui import QMouseEvent, QIcon
 
 
-class Main(QWidgetOverlayManager):
+class Main(PreviewsManager, QWidgetOverlayManager):
     def __init__(self):
-        super().__init__()
+        QWidgetOverlayManager.__init__(self)
+        PreviewsManager.__init__(self)
+
         self.setMouseTracking(True)
 
         self.app = None
@@ -42,7 +46,7 @@ class Main(QWidgetOverlayManager):
     def setupAreas(self):
         self.app = WindowArea(window=self, area=Areas.App)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
-        self.main = MainWindowArea(window=self)
+        self.main = MainWindowArea(window=self, preview_manager=self)
         self.tabs = TabWindowArea(window=self,
                                   on_add_tab=self.on_add_tab,
                                   on_unselect_tab=self.on_unselect_tab,

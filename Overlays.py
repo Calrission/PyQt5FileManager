@@ -17,7 +17,10 @@ class QSmartWidget(QWidget):
     def _calc_x_y(self, x, y):
         new_x = x if x + self.width() <= self.parent().width() else x - self.width()
         new_y = y if y + self.height() <= self.parent().height() else y - self.height()
-        self.x, self.y = new_x, new_y
+        if new_y >= 0 and new_x >= 0:
+            self.x, self.y = new_x, new_y
+        else:
+            self.x, self.y = x, y
 
     def show(self) -> None:
         self.initUI()

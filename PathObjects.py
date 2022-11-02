@@ -231,6 +231,9 @@ class File(PathObject):
             return TypeFormatFile.TXT
         return TypeFormatFile.OTHER
 
+    def check_type_format(self, format):
+        return self.format in format
+
     def refresh(self):
         self.__check_type()
         self.__detect_format()

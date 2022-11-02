@@ -28,3 +28,8 @@ class UtilsVisual:
         svg = QtSvg.QSvgWidget(file)
         svg.setGeometry(0, 0, w, h)
         return svg
+
+    @staticmethod
+    def get_w_h_image(file_path: str):
+        pixmap = QPixmap(file_path)
+        return pixmap.size().width(), pixmap.size().height()

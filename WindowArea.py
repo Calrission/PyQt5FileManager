@@ -2,6 +2,7 @@ from PyQt5.QtGui import QMouseEvent
 from OverlayManager import QWidgetOverlayManager
 from Overlays import QActionPathObject, Action, QActionDeletePathObject, QActionRenamePathObject, QOverlay, QActionMenu, \
     QActionLineEdit, QActionAlertDialog
+from PreviewsWidgets import PreviewsManager, PreviewsFactory
 from Tab import *
 from QPathObjects import *
 from QSwitchImageButton import *
@@ -225,10 +226,11 @@ class TabWindowArea(WindowArea):
 
 class MainWindowArea(WindowArea):
 
-    def __init__(self, window: QWidgetOverlayManager):
+    def __init__(self, window: QWidgetOverlayManager, preview_manager: PreviewsManager):
         super().__init__(window, area=Areas.MainPanel)
 
         self.widgets = [[]]
+        self.preview_manager = preview_manager
         self.max_column = self.width // (WIDTH_ITEM + MARGIN_ITEM)
         self.max_row = self.height // (HEIGHT_ITEM + MARGIN_ITEM)
 
@@ -317,6 +319,13 @@ class MainWindowArea(WindowArea):
             set_name.set_positive("Готово", lambda name: self.click_action_create_path_object(set_name, name, type_obj))
             self.window.add_new_overlay(set_name)
             self.window.show_overlay(set_name)
+        elif action == Action.PRE_OPEN:
+            item = args[0]
+            widget = self.get_widget_path_object(item)
+            x = widget.x() + widget.width() // 2
+            y = widget.y() + widget.height() // 2
+            preview = PreviewsFactory.get_preview_path_object(x, y, self.window, item)
+            self.preview_manager.show_preview(preview)
 
     def click_action_create_path_object(self, overlay: QOverlay,
                                         new_name: str,
@@ -346,7 +355,7 @@ class MainWindowArea(WindowArea):
         self._tab.folder.refresh()
         self.refresh_content()
 
-    def get_widget_path_object(self, path_object: PathObject):
+    def get_widget_path_object(self, path_object: PathObject) -> QWidget:
         for widget in [j for i in self.widgets for j in i]:
             if widget.obj == path_object:
                 return widget
