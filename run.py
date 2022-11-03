@@ -1,5 +1,5 @@
-from PathObjects import *
-from Tab import Tab
+from common.PathObjects import *
+from common.Tab import Tab
 from pprint import pprint
 from PyQt5.QtWidgets import QApplication
 from App import Main

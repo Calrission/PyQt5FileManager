@@ -2,31 +2,11 @@ import os
 import shutil
 from os.path import exists
 from os import listdir
-from Exceptions import *
-from enum import Enum
-from ConstValues import SLASH, OS, START_TAB, AUDIO_FORMATS, VIDEO_FORMATS, IMAGE_FORMATS, \
+from values.Exceptions import *
+from values.ConstValues import SLASH, OS, START_TAB, AUDIO_FORMATS, VIDEO_FORMATS, IMAGE_FORMATS, \
     TXT_FORMATS, CODE_FORMATS, PDF_FORMATS, WORD_FORMATS, EXCEL_FORMATS, POWERPOINT_FORMATS
-
-
-class TypePathObject(Enum):
-    FOLDER = "folder"
-    FILE = "file"
-    UNKNOWN = "unknown"
-
-    def to_rus_str(self):
-        if self == TypePathObject.FOLDER:
-            return "Папка"
-        elif self == TypePathObject.FILE:
-            return "Файл"
-        return self.value
-
-
-class TypeFormatFile(Enum):
-    MEDIA = "media"
-    TXT = "txt"
-    CODE = "code"
-    OFFICE = "office"
-    OTHER = "other"
+from values.TypeFormatFile import TypeFormatFile
+from values.TypePathObject import TypePathObject
 
 
 class PathObject:

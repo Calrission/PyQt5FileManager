@@ -1,8 +1,9 @@
-from enum import Enum
 from PyQt5.QtWidgets import QWidget, QLabel
-from ConstValues import WIDTH, HEIGHT
-from Overlays import QOverlay, QActionAlertDialog
-from UtilsVisual import UtilsVisual
+from overlays.QActionAlertDialog import QActionAlertDialog
+from overlays.QOverlay import QOverlay
+from values.ConstValues import WIDTH, HEIGHT
+from common.UtilsVisual import UtilsVisual
+from values.ModeOverlayManager import ModeOverlayManager
 
 
 class LevelsOverlays:
@@ -155,11 +156,6 @@ class OverlayManager:
                 level_overlays.append([parent] + sub_overlays)
             lst.append(level_overlays)
         return lst
-
-
-class ModeOverlayManager(Enum):
-    MULTY = 0
-    SINGLE = 1
 
 
 class QWidgetOverlayManager(QWidget):

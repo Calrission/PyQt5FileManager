@@ -1,10 +1,15 @@
 import traceback
-
-from PreviewsWidgets import PreviewsManager
-from WindowArea import *
-from Tab import *
-from MouseAreaListener import MouseAreaListener
 from PyQt5.QtGui import QMouseEvent, QIcon
+from areas.ButtonsAreaWindow import ButtonsAreaWindow
+from areas.MainWindowArea import MainWindowArea
+from areas.MouseArea import MouseArea
+from areas.TabWindowArea import TabWindowArea
+from areas.WindowArea import WindowArea
+from common.Tab import Tab
+from values.Areas import Areas
+from values.ConstValues import *
+from managers.OverlayManager import QWidgetOverlayManager
+from managers.PreviewsManager import PreviewsManager
 
 
 class Main(PreviewsManager, QWidgetOverlayManager):
@@ -58,7 +63,7 @@ class Main(PreviewsManager, QWidgetOverlayManager):
                                                  click_next_history=self.click_next_history,
                                                  click_setting=self.click_setting)
 
-        self.mouse_listener = MouseAreaListener([self.tabs, self.left, self.main, self.history_buttons])
+        self.mouse_listener = MouseArea([self.tabs, self.left, self.main, self.history_buttons])
 
     def on_add_tab(self, tab: Tab):
         pass

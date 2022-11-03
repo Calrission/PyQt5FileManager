@@ -1,7 +1,7 @@
-from WindowArea import WindowArea
+from areas.WindowArea import WindowArea
 
 
-class MouseAreaListener:
+class MouseArea:
     def __init__(self, areas: list[WindowArea]):
         self.areas = areas
         self.last_x_y = (0, 0)
