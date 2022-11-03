@@ -4,8 +4,23 @@ import os
 #   Скрипт для быстрого подсчёта количество строк в .py файлах проекта (без учета строк самого скрипта)
 #
 
-lst = [i for i in os.listdir(os.path.realpath("/".join(str(__file__).split("/")[0:-1])))
-       if os.path.isfile(i) and i != "count_lines.py" and ".py" in i]
+lst = []
+file = str(__file__).replace("/", "\\")
+path = "\\".join(file.split("\\")[0:-1])
+for i in os.listdir(os.path.realpath(path)):
+    if i[0] == ".":
+        continue
+    path_i = path + "\\" + i
+    if os.path.isfile(path_i):
+        lst.append(path_i)
+    else:
+        for j in os.listdir(path_i):
+            path_j = path_i + "\\" + j
+            if os.path.isfile(path_j):
+                lst.append(path_j)
+
+lst = list(filter(lambda x: "count_lines.py" not in x and ".py" in x and ".pyc" not in x, lst))
+
 count = 0
 for file in lst:
     with open(file, "r") as f:
@@ -13,4 +28,4 @@ for file in lst:
         count += count_file
         print(f"{f.name} - {count_file}")
 
-print(count)
+print(f"Всего строчек: {count}")
