@@ -1,7 +1,7 @@
 from common.PathObjects import File
 from common.UtilsVisual import UtilsVisual
 from previews.QMediaFilePreview import QMediaFilePreview
-from values.ConstValues import IMAGE_FORMATS, MARGIN_ITEM
+from values.ConstValues import IMAGE_FORMATS, IMAGE_PREVIEW_HEIGHT
 from widgets.QImageView import QImageView
 
 
@@ -12,10 +12,10 @@ class QImagePreview(QMediaFilePreview):
         self.image = None
 
     def _set_w_h_image(self):
-        main_w, main_h = self.parent().width() - self.x - MARGIN_ITEM, self.parent().height() - self.y - MARGIN_ITEM
         w, h = UtilsVisual.get_w_h_image(self.path_object.path)
-        scale = min([main_w / w, main_h / h])
-        self.image.resize(int(w * scale), int(h * scale))
+        scale = IMAGE_PREVIEW_HEIGHT / h
+        new_w, new_h = int(w * scale), int(h * scale)
+        self.image.resize(new_w, new_h)
 
     def initUI(self):
         self.image = QImageView(self, self.path_object.path)

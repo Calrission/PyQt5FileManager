@@ -20,3 +20,7 @@ class QAlphaDarkBackground(QWidget):
     def show_background(self):
         self.background.raise_()
         self.background.show()
+
+    def hide_background(self):
+        self.background.lower()
+        self.background.hide()
