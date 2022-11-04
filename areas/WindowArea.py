@@ -1,13 +1,12 @@
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QWidget, QLabel
 from common.UtilsVisual import UtilsVisual
-from managers.OverlayManager import QWidgetOverlayManager
 from values.Areas import Areas
 from values.ConstValues import COLOR_BACKGROUND_DEFAULT, HEIGHT, WIDTH
 
 
 class WindowArea:
-    def __init__(self, window: QWidgetOverlayManager,
+    def __init__(self, window,
                  start_x: int = None, end_x: int = None,
                  start_y: int = None, end_y: int = None,
                  width: int = None, height: int = None,
