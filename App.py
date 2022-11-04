@@ -111,6 +111,9 @@ class Main(PreviewsManager, QWidgetOverlayManager):
     def mouseMoveEvent(self, event: QMouseEvent):
         self.mouse_listener.mouseMoveEvent(event)
 
+    def is_active(self):
+        return QWidgetOverlayManager.is_active(self) or PreviewsManager.is_active(self)
+
     def wheelEvent(self, event):
         if not self.is_active():
             angle = event.angleDelta().y()

@@ -24,3 +24,6 @@ class PreviewsManager(QAlphaDarkBackground):
         super().press_background(*args)
         self.dismiss_active_preview()
 
+    def is_active(self):
+        return self.active_preview is not None
+
