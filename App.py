@@ -1,4 +1,6 @@
 import traceback
+
+from PyQt5 import QtGui, Qt
 from PyQt5.QtGui import QMouseEvent, QIcon
 from areas.ButtonsAreaWindow import ButtonsAreaWindow
 from areas.MainWindowArea import MainWindowArea
@@ -149,3 +151,8 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
                 if (angle < 0 and area.get_need_wheel_right()) or (angle > 0 and area.get_need_wheel_left()):
                     area.delta_change_x_children(px_x)
                     self.history_buttons.raise_()
+
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
+        if event.key() == Qt.Qt.Key_F5:
+            self.main.refresh_content()
+
