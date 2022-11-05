@@ -1,5 +1,4 @@
 import traceback
-
 from PyQt5 import QtGui, Qt
 from PyQt5.QtGui import QMouseEvent, QIcon
 from areas.ButtonsAreaWindow import ButtonsAreaWindow
