@@ -5,6 +5,7 @@ from areas.MainWindowArea import MainWindowArea
 from areas.MouseArea import MouseArea
 from areas.TabWindowArea import TabWindowArea
 from areas.WindowArea import WindowArea
+from common.PathObjects import Folder
 from common.Tab import Tab
 from managers.DatabaseManager import DatabaseManager
 from values.Areas import Areas
@@ -52,7 +53,9 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
     def setupAreas(self):
         self.app = WindowArea(window=self, area=Areas.App)
         self.left = WindowArea(window=self, area=Areas.LeftPanel)
-        self.main = MainWindowArea(window=self, preview_manager=self)
+        self.main = MainWindowArea(window=self,
+                                   preview_manager=self,
+                                   on_new_tab=self.on_new_tab)
         self.tabs = TabWindowArea(window=self,
                                   on_add_tab=self.on_add_tab,
                                   on_unselect_tab=self.on_unselect_tab,
@@ -91,6 +94,9 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
     def on_select_tab(self, tab: Tab, index: int):
         self.main.set_tab(tab)
         self.sync_history_buttons()
+
+    def on_new_tab(self, folder: Folder):
+        self.tabs.tab_manager.add_new_tab_select(folder.path)
 
     def on_change_tab(self, last_folder: str, tab: Tab):
         self.open_tabs.update_open_tab(last_folder, tab.folder.path)

@@ -37,6 +37,10 @@ class TabManager:
         tab = self.convert_path_to_tab(path)
         self.add_tab(tab)
 
+    def add_new_tab_select(self, path: str):
+        self.add_new_tab(path)
+        self.select_tab_index(-1)
+
     def _on_change_folder(self, last_folder: str, folder):
         self.on_change_tab(last_folder, self._get_tab_folder(folder))
 

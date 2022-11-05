@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget
-from common.PathObjects import PathObject, File, TypeFormatFile, TypePathObject
+from common.PathObjects import PathObject, File, TypeFormatFile, TypePathObject, Folder
 from overlays.QActionMenu import QActionMenu
 from values.Action import Action
 
@@ -9,11 +9,14 @@ class QActionPathObject(QActionMenu):
     def get_instance(path_object: PathObject, x: int, y: int, parent: QWidget):
         can_pre_watch = isinstance(path_object, File) and path_object.type == TypePathObject.FILE and \
                         path_object.get_type_format() in [TypeFormatFile.MEDIA, TypeFormatFile.CODE, TypeFormatFile.TXT]
+        can_open_new_tab = isinstance(path_object, Folder)
         items = [
             Action.OPEN, Action.RENAME, Action.DELETE, Action.INFO
         ]
         if can_pre_watch:
             items.insert(1, Action.PRE_OPEN)
+        if can_open_new_tab:
+            items.insert(1, Action.OPEN_NEW_TAB)
         return QActionPathObject(path_object, x, y, parent, items)
 
     def __init__(self, path_object: PathObject, x: int, y: int, parent: QWidget, items: list[Action]):

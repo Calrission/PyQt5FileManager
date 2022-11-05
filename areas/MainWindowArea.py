@@ -24,7 +24,9 @@ from widgets.QPathObject import QPathObject
 
 class MainWindowArea(WindowArea):
 
-    def __init__(self, window: QWidgetOverlayManager, preview_manager: PreviewsManager):
+    def __init__(self, window: QWidgetOverlayManager,
+                 preview_manager: PreviewsManager,
+                 on_new_tab=None):
         super().__init__(window, area=Areas.MainPanel)
 
         self.widgets = [[]]
@@ -33,6 +35,7 @@ class MainWindowArea(WindowArea):
         self.max_row = self.height // (HEIGHT_ITEM + MARGIN_ITEM)
 
         self._tab = None
+        self.on_new_tab = on_new_tab
 
     def _get_x_y_new_last_item(self):
         last_row = self.widgets[-1]
@@ -124,6 +127,9 @@ class MainWindowArea(WindowArea):
             y = widget.y() + widget.height() // 2
             preview = PreviewsFactory.get_preview_path_object(x, y, self.window, item)
             self.preview_manager.show_preview(preview)
+        elif action == Action.OPEN_NEW_TAB:
+            item = args[0]
+            self.on_new_tab(item)
 
     def click_action_create_path_object(self, overlay: QOverlay,
                                         new_name: str,

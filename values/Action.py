@@ -9,3 +9,4 @@ class Action(Enum):
     INFO = "Свойства"
     CREATE_FOLDER = "Создать папку"
     CREATE_FILE = "Создать файл"
+    OPEN_NEW_TAB = "Открыть в новой вкладке"
