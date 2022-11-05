@@ -12,7 +12,8 @@ class TabWindowArea(WindowArea):
     def __init__(self, window: QWidgetOverlayManager,
                  on_add_tab, on_select_tab,
                  on_remove_tab, on_unselect_tab,
-                 on_change_tab, ):
+                 on_prepare, on_change_tab,
+                 tabs):
         super().__init__(window, area=Areas.TabPanel)
 
         self.on_remove_tab = on_remove_tab
@@ -20,14 +21,20 @@ class TabWindowArea(WindowArea):
         self.on_select_tab = on_select_tab
         self.on_unselect_tab = on_unselect_tab
         self.on_change_tab = on_change_tab
+        self.on_prepare = on_prepare
 
         self.tab_manager = TabManager(
             on_remove_tab=self._on_remove,
             on_add_tab=self._on_add,
             on_select_tab=self._on_select,
             on_unselect_tab=self._on_unselect,
-            on_change_tab=self._on_change_folder
+            on_change_tab=self._on_change_folder,
+            on_prepare=self._on_prepare,
+            tabs_path=tabs
         )
+
+    def prepare(self):
+        self.tab_manager.prepare()
 
     def generate_view_tab(self, tab: Tab):
         qtab = QTab(self.window, tab)
@@ -37,25 +44,38 @@ class TabWindowArea(WindowArea):
         qtab.show()
         return qtab
 
+    def _on_prepare(self, tabs: list, select_index: int):
+        for tab in tabs:
+            self._generate_new_view_tab(tab)
+        self._on_select(tabs[select_index], select_index)
+        if self.on_prepare is not None:
+            self.on_prepare(tabs, select_index)
+
+    def _generate_new_view_tab(self, tab: Tab):
+        view = self.generate_view_tab(tab)
+        self.children.append(view)
+
     def _click_tab(self, view):
         index = self.children.index(view)
         tab = self.tab_manager.get(index)
         self.tab_manager.select_tab(tab)
 
     def _on_add(self, tab: Tab):
-        view = self.generate_view_tab(tab)
-        self.children.append(view)
+        self._generate_new_view_tab(tab)
         self.on_add_tab(tab)
 
     def _calc_new_x(self):
         return self.start_x + sum([i.width() for i in self.children]) + MARGIN_TAB_H_TP * (len(self.children) + 1)
 
-    def _on_select(self, tab: Tab):
-        view = self.children[self.tab_manager.index(tab)]
+    def _select_view_tab(self, index: int):
+        view = self.children[index]
         if isinstance(view, QTab):
             view.set_select(True)
-        self.on_select_tab(tab)
         self._recalc_x_coord_children()
+
+    def _on_select(self, tab: Tab, index: int):
+        self._select_view_tab(index)
+        self.on_select_tab(tab, index)
 
     def _on_unselect(self, tab: Tab):
         view = self.children[self.tab_manager.index(tab)]

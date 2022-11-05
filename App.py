@@ -6,14 +6,16 @@ from areas.MouseArea import MouseArea
 from areas.TabWindowArea import TabWindowArea
 from areas.WindowArea import WindowArea
 from common.Tab import Tab
+from managers.DatabaseManager import DatabaseManager
 from values.Areas import Areas
 from values.ConstValues import *
 from managers.OverlayManager import QWidgetOverlayManager
 from managers.PreviewsManager import PreviewsManager
 
 
-class Main(PreviewsManager, QWidgetOverlayManager):
+class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
     def __init__(self):
+        DatabaseManager.__init__(self)
         QWidgetOverlayManager.__init__(self)
         PreviewsManager.__init__(self)
 
@@ -32,7 +34,6 @@ class Main(PreviewsManager, QWidgetOverlayManager):
 
         self.setupWindow()
         self.setupAreas()
-        self.initUI()
 
     def excepthook(self, exc_type, exc_value, exc_tb):
         message = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
@@ -57,7 +58,9 @@ class Main(PreviewsManager, QWidgetOverlayManager):
                                   on_unselect_tab=self.on_unselect_tab,
                                   on_select_tab=self.on_select_tab,
                                   on_remove_tab=self.on_remove_tab,
-                                  on_change_tab=self.on_change_tab)
+                                  on_change_tab=self.on_change_tab,
+                                  on_prepare=self.on_prepare,
+                                  tabs=self.get_tabs_for_prepare())
         self.history_buttons = ButtonsAreaWindow(window=self,
                                                  click_back_history=self.click_back_history,
                                                  click_next_history=self.click_next_history,
@@ -65,17 +68,32 @@ class Main(PreviewsManager, QWidgetOverlayManager):
 
         self.mouse_listener = MouseArea([self.tabs, self.left, self.main, self.history_buttons])
 
+        self.tabs.prepare()
+
+    def get_tabs_for_prepare(self):
+        opened_tabs = self.open_tabs.get_all_open_tabs()
+        if len(opened_tabs) != 0:
+            return opened_tabs
+        else:
+            self.open_tabs.add_open_tab(START_TAB)
+            return [START_TAB]
+
+    def on_prepare(self, tabs: list, select_index: int):
+        self.on_select_tab(tabs[select_index], select_index)
+        self.sync_history_buttons()
+
     def on_add_tab(self, tab: Tab):
-        pass
+        self.open_tabs.add_open_tab(tab.folder.path)
 
     def on_remove_tab(self, tab: Tab):
-        pass
+        self.open_tabs.remove_open_tab(tab.folder.path)
 
-    def on_select_tab(self, tab: Tab):
+    def on_select_tab(self, tab: Tab, index: int):
         self.main.set_tab(tab)
         self.sync_history_buttons()
 
     def on_change_tab(self, tab: Tab):
+        self.open_tabs.update_open_tab(tab.folder.path)
         self.sync_history_buttons()
 
     def on_unselect_tab(self, tab: Tab):
@@ -100,10 +118,6 @@ class Main(PreviewsManager, QWidgetOverlayManager):
         can_prev = select_tab.history.can_prev()
         self.history_buttons.next_h.setEnabled(can_next)
         self.history_buttons.prev_h.setEnabled(can_prev)
-
-    def initUI(self):
-        self.tabs.tab_manager.add_new_tab(START_TAB)
-        self.sync_history_buttons()
 
     def mousePressEvent(self, event):
         self.mouse_listener.get_area_last_detect_mouse().mousePressEvent(event)
