@@ -150,7 +150,7 @@ class Folder(PathObject):
     def get_short_name(self):
         # 1/2/3/4 -> 3/4
         short = self.path
-        if short.replace(START_TAB, SLASH).count(SLASH) >= 2:
+        if short.replace(START_TAB, SLASH).count(SLASH) > 2:
             short = SLASH.join(short.split(SLASH)[-2:])
         return short
 
