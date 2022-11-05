@@ -3,6 +3,7 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel, QWidget
 from overlays.QOverlay import QOverlay
 from values.Action import Action
+from values.ConstValues import MARGIN_ITEM_ACTION
 
 
 class QActionMenu(QOverlay):
@@ -22,9 +23,13 @@ class QActionMenu(QOverlay):
             label.setParent(self)
             label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
             label.adjustSize()
-            label.move(5, index * 25 + 5)
+            label.move(MARGIN_ITEM_ACTION, index * 25 + MARGIN_ITEM_ACTION)
+            label.show()
             self.labels.append(label)
-        self._init_background(self.width(), len(self.items) * 25 + 5)
+        self._init_background(
+            max([i.width() for i in self.labels]) + MARGIN_ITEM_ACTION * 2,
+            len(self.items) * 25 + MARGIN_ITEM_ACTION
+        )
 
     def get_action_from_label(self, label: QLabel):
         return self.items[self.labels.index(label)]
