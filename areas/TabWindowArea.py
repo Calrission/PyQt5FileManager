@@ -95,9 +95,9 @@ class TabWindowArea(WindowArea):
                 item.move(item_x, item.y())
                 item_x += item.width() + MARGIN_TAB_H_TP
 
-    def _on_change_folder(self, tab: Tab):
+    def _on_change_folder(self, last_folder: str, tab: Tab):
         view = self.children[self.tab_manager.index(tab)]
         if isinstance(view, QTab):
             view.setText(tab.name)
-        self.on_change_tab(tab)
+        self.on_change_tab(last_folder, tab)
         self._recalc_x_coord_children()

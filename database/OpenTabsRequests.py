@@ -16,10 +16,10 @@ class OpenTabsRequests:
 
     @push_query_db_decorator
     def remove_open_tab(self, tab_path: str, cursor: Cursor, conn: Connection):
-        cursor.execute(f"delete from open_tabs where path={tab_path}")
+        cursor.execute(f"delete from open_tabs where path='{tab_path}'")
         conn.commit()
 
     @push_query_db_decorator
     def update_open_tab(self, old_tab_path: str, new_tab_path: str, cursor: Cursor, conn: Connection):
-        cursor.execute(f"update open_tabs set path={new_tab_path} where path={old_tab_path}")
+        cursor.execute(f"update open_tabs set path='{new_tab_path}' where path='{old_tab_path}'")
         conn.commit()

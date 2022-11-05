@@ -197,7 +197,7 @@ class MainWindowArea(WindowArea):
 
     def set_tab(self, tab: Tab):
         self._tab = tab
-        self._tab.add_on_change_folder(lambda x: self.refresh_content())
+        self._tab.add_on_change_folder(lambda last_folder, x: self.refresh_content())
         self.refresh_content()
 
     def get_tab(self):

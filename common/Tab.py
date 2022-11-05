@@ -15,26 +15,28 @@ class Tab:
         self.history = HistoryTab([self.folder.path])
 
     def move_to_child_folder(self, folder_name: str):
+        last_folder = self.folder.path
         self.folder.next(folder_name)
-        self._refresh_on_change_folder()
+        self._refresh_on_change_folder(last_folder)
 
     def move_to_folder(self, folder_path: str):
+        last_folder = self.folder.path
         self.folder.change(folder_path)
-        self._refresh_on_change_folder()
+        self._refresh_on_change_folder(last_folder)
 
     def add_on_change_folder(self, func):
         self._on_change_folder.append(func)
 
-    def _call_on_change_folder(self):
-        [i(self.folder) for i in self._on_change_folder]
+    def _call_on_change_folder(self, last_folder: str):
+        [i(last_folder, self.folder) for i in self._on_change_folder]
 
-    def _refresh_on_change_folder(self):
+    def _refresh_on_change_folder(self, last_folder: str):
         self.folder.refresh()
         self.name = self.folder.get_short_name()
         self.selector.change_origin_files(self.folder.children)
         self.history.add(self.folder.path)
         if self._on_change_folder is not None:
-            self._call_on_change_folder()
+            self._call_on_change_folder(last_folder)
 
     def move_back_parent(self):
         self.move_to_folder(self.folder.get_parent_folder_path())
