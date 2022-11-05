@@ -1,8 +1,11 @@
+from PyQt5 import Qt
 from PyQt5.QtWidgets import QWidget
 from common.Tab import Tab
 from areas.WindowArea import WindowArea
 from managers.OverlayManager import QWidgetOverlayManager
 from managers.TabManager import TabManager
+from overlays.QActionTab import QActionTab
+from values.Action import Action
 from values.Areas import Areas
 from values.ConstValues import MARGIN_TAB_V_TP, MARGIN_TAB_H_TP
 from widgets.QTab import QTab
@@ -40,7 +43,7 @@ class TabWindowArea(WindowArea):
         qtab = QTab(self.window, tab)
         new_x = self._calc_new_x()
         qtab.move(new_x, self.start_y + MARGIN_TAB_V_TP)
-        qtab.mousePressEvent = lambda x: self._click_tab(qtab)
+        qtab.mousePressEvent = lambda x: self._click_tab(x, qtab)
         qtab.show()
         return qtab
 
@@ -55,7 +58,27 @@ class TabWindowArea(WindowArea):
         view = self.generate_view_tab(tab)
         self.children.append(view)
 
-    def _click_tab(self, view):
+    def _click_tab(self, event: Qt.QMouseEvent, qtab: QTab):
+        if event.button() == Qt.Qt.LeftButton:
+            self._click_for_select_tab(qtab)
+        else:
+            x = event.x() + qtab.x()
+            y = event.y() + qtab.y()
+            self._click_for_action(qtab.tab, x, y)
+
+    def _click_for_action(self, tab: Tab, x, y):
+        menu = QActionTab.get_instance(tab, x, y, self.window)
+        menu.clickItemEvent = self.eventItemOverlayPathObject
+        self.window.add_new_overlay(menu)
+        self.window.show_overlay(menu)
+
+    def eventItemOverlayPathObject(self, action: Action, tab: Tab):
+        self.window.dismiss_all()
+        if action == Action.CLOSE_TAB:
+            self.tab_manager.remove_tab(tab)
+            self._recalc_x_coord_children()
+
+    def _click_for_select_tab(self, view):
         index = self.children.index(view)
         tab = self.tab_manager.get(index)
         self.tab_manager.select_tab(tab)
@@ -83,10 +106,10 @@ class TabWindowArea(WindowArea):
             view.set_select(False)
         self.on_unselect_tab(tab)
 
-    def _on_remove(self, tab: Tab):
-        view = self.children[self.tab_manager.index(tab)]
+    def _on_remove(self, tab: Tab, index: int):
+        view = self.children[index]
         self.deleteLaterWidget(view)
-        self.on_remove_tab(tab)
+        self.on_remove_tab(tab, index)
 
     def _recalc_x_coord_children(self):
         item_x = self.start_x + MARGIN_TAB_H_TP + self._delta_wheel_x

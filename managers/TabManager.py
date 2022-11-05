@@ -65,9 +65,10 @@ class TabManager:
     def remove_tab(self, tab: Tab):
         if self._tabs.index(tab) == self._select_tab_index:
             self.select_tab(self.get(self._select_tab_index - 1))
+        index = self._tabs.index(tab)
         self._tabs.remove(tab)
         if self.on_remove_tab is not None:
-            self.on_remove_tab(tab)
+            self.on_remove_tab(tab, index)
 
     def select_tab_index(self, index: int):
         tab = self._tabs[index]

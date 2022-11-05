@@ -88,7 +88,7 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
     def on_add_tab(self, tab: Tab):
         self.open_tabs.add_open_tab(tab.folder.path)
 
-    def on_remove_tab(self, tab: Tab):
+    def on_remove_tab(self, tab: Tab, index: int):
         self.open_tabs.remove_open_tab(tab.folder.path)
 
     def on_select_tab(self, tab: Tab, index: int):

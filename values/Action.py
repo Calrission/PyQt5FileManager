@@ -10,3 +10,4 @@ class Action(Enum):
     CREATE_FOLDER = "Создать папку"
     CREATE_FILE = "Создать файл"
     OPEN_NEW_TAB = "Открыть в новой вкладке"
+    CLOSE_TAB = "Закрыть вкладку"
