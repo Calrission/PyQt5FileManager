@@ -19,7 +19,7 @@ class TabManager:
         self.on_change_tab = on_change_tab
         self.on_prepare = on_prepare
 
-        self._tabs = [Tab(i) for i in tabs_path] if tabs_path is not None else []
+        self._tabs = [self.convert_path_to_tab(i) for i in tabs_path] if tabs_path is not None else []
 
         self._select_tab_index = None
 
@@ -28,10 +28,17 @@ class TabManager:
             self._select_tab_index = 0
             self.on_prepare(self._tabs, 0)
 
-    def add_new_tab(self, path):
+    def convert_path_to_tab(self, path: str):
         tab = Tab(path)
-        tab.add_on_change_folder(lambda folder: self.on_change_tab(self._get_tab_folder(folder)))
+        tab.add_on_change_folder(lambda folder: self._on_change_folder(folder))
+        return tab
+
+    def add_new_tab(self, path):
+        tab = self.convert_path_to_tab(path)
         self.add_tab(tab)
+
+    def _on_change_folder(self, folder):
+        self.on_change_tab(self._get_tab_folder(folder))
 
     def add_new_tabs(self, paths: list[str]):
         for path in paths:

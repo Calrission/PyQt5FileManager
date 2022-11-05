@@ -93,7 +93,7 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
         self.sync_history_buttons()
 
     def on_change_tab(self, tab: Tab):
-        self.open_tabs.update_open_tab(tab.folder.path)
+        #self.open_tabs.update_open_tab(tab.folder.path)
         self.sync_history_buttons()
 
     def on_unselect_tab(self, tab: Tab):
