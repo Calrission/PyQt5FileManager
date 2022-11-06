@@ -14,6 +14,7 @@ class QActionMenu(QOverlay):
         self.clickItemEvent = None
 
     def initUI(self):
+        super().initUI()
         self.refresh()
 
     def refresh(self):
@@ -26,10 +27,9 @@ class QActionMenu(QOverlay):
             label.move(MARGIN_ITEM_ACTION, index * 25 + MARGIN_ITEM_ACTION)
             label.show()
             self.labels.append(label)
-        self._init_background(
-            max([i.width() for i in self.labels]) + MARGIN_ITEM_ACTION * 2,
-            len(self.items) * 25 + MARGIN_ITEM_ACTION
-        )
+        w, h = max([i.width() for i in self.labels]) + MARGIN_ITEM_ACTION * 2, len(self.items) * 25 + MARGIN_ITEM_ACTION
+        self._init_background(w, h)
+        self.resize(w, h)
 
     def get_action_from_label(self, label: QLabel):
         return self.items[self.labels.index(label)]

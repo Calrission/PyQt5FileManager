@@ -47,7 +47,6 @@ class QActionAlertDialog(QOverlay):
             cancel.move(20, self.height() - 40)
             if self._negative is not None:
                 cancel.mousePressEvent = lambda x: self._click_negative()
-
         super().initUI()
 
     def _click_positive(self):
