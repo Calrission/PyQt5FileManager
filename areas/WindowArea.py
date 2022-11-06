@@ -94,19 +94,19 @@ class WindowArea:
 
     def get_need_wheel_left(self):
         left_widget = self.get_left_widget()
-        return left_widget.x() < self.start_x
+        return left_widget is not None and left_widget.x() < self.start_x
 
     def get_need_wheel_right(self):
         right_widget = self.get_right_widget()
-        return right_widget.x() + right_widget.width() > self.end_x
+        return right_widget is not None and right_widget.x() + right_widget.width() > self.end_x
 
     def get_need_wheel_down(self):
         bottom_widget = self.get_bottom_widget()
-        return bottom_widget.y() + bottom_widget.height() > HEIGHT
+        return bottom_widget is not None and bottom_widget.y() + bottom_widget.height() > HEIGHT
 
     def get_need_wheel_top(self):
         top_widget = self.get_top_widget()
-        return top_widget.y() < self.start_y
+        return top_widget is not None and top_widget.y() < self.start_y
 
     def delta_change_y_children(self, delta_y: int):
         self._delta_wheel_y += delta_y

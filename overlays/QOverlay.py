@@ -1,7 +1,5 @@
 from PyQt5.QtWidgets import QWidget
-
 from widgets.QImageBackground import QImageBackground
-from widgets.QImageView import QImageView
 from widgets.QSmartWidget import QSmartWidget
 
 

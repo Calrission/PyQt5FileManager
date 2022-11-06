@@ -2,6 +2,7 @@ import traceback
 from PyQt5 import QtGui, Qt
 from PyQt5.QtGui import QMouseEvent, QIcon
 from areas.ButtonsAreaWindow import ButtonsAreaWindow
+from areas.LeftWindowArea import LeftWindowArea
 from areas.MainWindowArea import MainWindowArea
 from areas.MouseArea import MouseArea
 from areas.TabWindowArea import TabWindowArea
@@ -53,7 +54,7 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
 
     def setupAreas(self):
         self.app = WindowArea(window=self, area=Areas.App)
-        self.left = WindowArea(window=self, area=Areas.LeftPanel)
+        self.left = LeftWindowArea(window=self, db_manager=self)
         self.main = MainWindowArea(window=self,
                                    preview_manager=self,
                                    on_new_tab=self.on_new_tab)
@@ -139,16 +140,23 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
         if not self.is_active():
             angle = event.angleDelta().y()
             area = self.mouse_listener.get_area_last_detect_mouse()
+            px = int(angle * ANGLE_WHEEL_TO_PX)
+            need_wheel_horizontal = (angle < 0 and area.get_need_wheel_right()) or\
+                                    (angle > 0 and area.get_need_wheel_left())
+            need_wheel_vertical = (angle < 0 and area.get_need_wheel_down()) or\
+                                  (angle > 0 and area.get_need_wheel_top())
             if isinstance(area, MainWindowArea):
-                px_y = int(angle * ANGLE_WHEEL_TO_PX)
-                if (angle < 0 and area.get_need_wheel_down()) or (angle > 0 and area.get_need_wheel_top()):
-                    area.delta_change_y_children(px_y)
+                if need_wheel_vertical:
+                    area.delta_change_y_children(px)
                     self.tabs.raise_()
                     self.history_buttons.raise_()
             elif isinstance(area, TabWindowArea):
-                px_x = int(angle * ANGLE_WHEEL_TO_PX)
-                if (angle < 0 and area.get_need_wheel_right()) or (angle > 0 and area.get_need_wheel_left()):
-                    area.delta_change_x_children(px_x)
+                if need_wheel_horizontal:
+                    area.delta_change_x_children(px)
+                    self.history_buttons.raise_()
+            elif isinstance(area, LeftWindowArea):
+                if need_wheel_vertical:
+                    area.delta_change_y_children(px)
                     self.history_buttons.raise_()
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
