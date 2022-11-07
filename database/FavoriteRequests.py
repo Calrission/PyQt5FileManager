@@ -1,5 +1,5 @@
 from sqlite3 import Cursor, Connection
-from database.push_query_db_decorator import push_query_db_decorator
+from database.InitorRequests import push_query_db_decorator
 
 
 class FavoriteRequests:
