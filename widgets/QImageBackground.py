@@ -16,3 +16,5 @@ class QImageBackground(QWidget):
         self.image_widget.mousePressEvent = lambda x: None
         self.image_widget.resize(w, h)
         self.image_widget.lower()
+
+
