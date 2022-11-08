@@ -16,6 +16,7 @@ class QCardList(QImageBackground):
         self.title_txt = title
         self.empty_label = None
         self.title = None
+        self.click_item = None
         self.start_list_labels = 0
         self.init_title()
         self.refresh()
@@ -87,6 +88,7 @@ class QCardList(QImageBackground):
         new_item.move(x, y)
         new_item.setMouseTracking(True)
         new_item.show()
+        new_item.mousePressEvent = lambda event: self.click_item(text)
         self._labels.append(new_item)
         self._children.append(new_item)
         self._update_size()

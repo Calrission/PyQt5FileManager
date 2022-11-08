@@ -7,7 +7,7 @@ from areas.MainWindowArea import MainWindowArea
 from areas.MouseArea import MouseArea
 from areas.TabWindowArea import TabWindowArea
 from areas.WindowArea import WindowArea
-from common.PathObjects import Folder
+from common.PathObjects import Folder, PathObject, File
 from common.Tab import Tab
 from managers.DatabaseManager import DatabaseManager
 from values.Areas import Areas
@@ -54,7 +54,9 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
 
     def setupAreas(self):
         self.app = WindowArea(window=self, area=Areas.App)
-        self.left = LeftWindowArea(window=self, db_manager=self)
+        self.left = LeftWindowArea(window=self,
+                                   db_manager=self,
+                                   on_open_path_object=self.on_open_path_object)
         self.main = MainWindowArea(window=self,
                                    preview_manager=self,
                                    on_new_tab=self.on_new_tab,
@@ -76,6 +78,12 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
         self.mouse_listener = MouseArea([self.tabs, self.main, self.history_buttons, self.left])
 
         self.tabs.prepare()
+
+    def on_open_path_object(self, path: str):
+        if PathObject.path_is_dir(path):
+            self.tabs.tab_manager.get_select_tab().move_to_folder(path)
+        else:
+            File.start_file_path(path)
 
     def get_tabs_for_prepare(self):
         opened_tabs = self.open_tabs.get_all_open_tabs()

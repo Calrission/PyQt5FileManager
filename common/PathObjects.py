@@ -56,6 +56,10 @@ class PathObject:
     def check_exist_path(path: str):
         return os.path.exists(path)
 
+    @staticmethod
+    def path_is_dir(path: str):
+        return os.path.isdir(path)
+
 
 class Folder(PathObject):
     def __init__(self, path: str, name: str = None):
@@ -189,16 +193,20 @@ class File(PathObject):
         pass
 
     def open_default_app_os(self):
+        self.start_file_path(self.path)
+
+    @staticmethod
+    def start_file_path(path: str):
         if OS == 'Darwin':  # macOS not support
             pass
             # from subprocess import call
             # call(('open', self.path))
         if OS == 'Windows':  # Windows
             from os import startfile
-            startfile(self.path)
+            startfile(path)
         else:  # linux variants
             from subprocess import call
-            call(('xdg-open', self.path))
+            call(('xdg-open', path))
 
     def get_type_format(self):
         if self.format in IMAGE_FORMATS + VIDEO_FORMATS + AUDIO_FORMATS:

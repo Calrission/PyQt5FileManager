@@ -6,12 +6,16 @@ from values.ConstValues import MARGIN_ITEM
 
 
 class LeftWindowArea(WindowArea):
-    def __init__(self, window, db_manager: DatabaseManager):
+    def __init__(self,
+                 window,
+                 db_manager: DatabaseManager,
+                 on_open_path_object):
         super().__init__(window, area=Areas.LeftPanel)
         self.db_manager = db_manager
 
         self.favorites = QCardList(self.window, self.width - MARGIN_ITEM * 2, "Избранное")
         self.favorites.move(self.start_x + MARGIN_ITEM, self.start_y + MARGIN_ITEM)
+        self.favorites.click_item = lambda path: on_open_path_object(path)
 
         self.children.append(self.favorites)
         self._init_content_favorites()
