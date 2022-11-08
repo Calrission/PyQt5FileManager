@@ -88,7 +88,7 @@ class QCardList(QImageBackground):
         new_item.move(x, y)
         new_item.setMouseTracking(True)
         new_item.show()
-        new_item.mousePressEvent = lambda event: self.click_item(text)
+        new_item.mousePressEvent = lambda event: self.click_item(event, text)
         self._labels.append(new_item)
         self._children.append(new_item)
         self._update_size()

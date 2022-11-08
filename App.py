@@ -55,6 +55,7 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
     def setupAreas(self):
         self.app = WindowArea(window=self, area=Areas.App)
         self.left = LeftWindowArea(window=self,
+                                   overlay_manager=self,
                                    db_manager=self,
                                    on_open_path_object=self.on_open_path_object)
         self.main = MainWindowArea(window=self,
@@ -81,7 +82,9 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
 
     def on_open_path_object(self, path: str):
         if PathObject.path_is_dir(path):
-            self.tabs.tab_manager.get_select_tab().move_to_folder(path)
+            tab = self.tabs.tab_manager.get_select_tab()
+            if tab.folder.path != path:
+                tab.move_to_folder(path)
         else:
             File.start_file_path(path)
 
