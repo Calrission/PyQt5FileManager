@@ -1,9 +1,11 @@
 import math
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel, QWidget
+
+from common.UtilsVisual import UtilsVisual
 from overlays.QOverlay import QOverlay
 from values.Action import Action
-from values.ConstValues import MARGIN_ITEM_ACTION
+from values.ConstValues import MARGIN_ITEM_ACTION, COLOR_TEXT
 
 
 class QActionMenu(QOverlay):
@@ -22,7 +24,7 @@ class QActionMenu(QOverlay):
         for index, item in enumerate(self.items):
             label = QLabel(item.value)
             label.setParent(self)
-            UtilsVisual.set_color_text(self.label, COLOR_TEXT)
+            UtilsVisual.set_color_text(label, COLOR_TEXT)
             label.adjustSize()
             label.move(MARGIN_ITEM_ACTION, index * 25 + MARGIN_ITEM_ACTION)
             label.show()

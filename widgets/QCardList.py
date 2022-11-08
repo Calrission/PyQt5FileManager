@@ -48,7 +48,8 @@ class QCardList(QImageBackground):
         self._children.append(self.empty_label)
 
     def add_item(self, item: str):
-        self.hide_empty_label()
+        if self.empty_label is not None:
+            self.hide_empty_label()
         self._items.append(item)
         self._add_new_label(item)
 
@@ -85,6 +86,7 @@ class QCardList(QImageBackground):
         new_item = QImageButton(self, text)
         new_item.resize(width, new_item.height())
         new_item.move(x, y)
+        new_item.show()
         self._labels.append(new_item)
         self._children.append(new_item)
         self._update_size()

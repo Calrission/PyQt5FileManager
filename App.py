@@ -57,7 +57,9 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
         self.left = LeftWindowArea(window=self, db_manager=self)
         self.main = MainWindowArea(window=self,
                                    preview_manager=self,
-                                   on_new_tab=self.on_new_tab)
+                                   on_new_tab=self.on_new_tab,
+                                   on_favorite=self.on_favorite,
+                                   db_manager=self)
         self.tabs = TabWindowArea(window=self,
                                   on_add_tab=self.on_add_tab,
                                   on_unselect_tab=self.on_unselect_tab,
@@ -89,6 +91,9 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
 
     def on_add_tab(self, tab: Tab):
         self.open_tabs.add_open_tab(tab.folder.path)
+
+    def on_favorite(self, item):
+        self.left.refresh_favorites()
 
     def on_remove_tab(self, tab: Tab, index: int):
         self.open_tabs.remove_single_open_tab(tab.folder.path)

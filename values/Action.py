@@ -11,3 +11,5 @@ class Action(Enum):
     CREATE_FILE = "Создать файл"
     OPEN_NEW_TAB = "Открыть в новой вкладке"
     CLOSE_TAB = "Закрыть вкладку"
+    ADD_FAVORITE = "Добавить в избранное"
+    REMOVE_FAVORITE = "Удалить из избранного"

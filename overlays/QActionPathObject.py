@@ -11,7 +11,7 @@ class QActionPathObject(QActionMenu):
                         path_object.get_type_format() in [TypeFormatFile.MEDIA, TypeFormatFile.CODE, TypeFormatFile.TXT]
         can_open_new_tab = isinstance(path_object, Folder)
         items = [
-            Action.OPEN, Action.RENAME, Action.DELETE, Action.INFO
+            Action.OPEN, Action.RENAME, Action.ADD_FAVORITE, Action.DELETE, Action.INFO
         ]
         if can_pre_watch:
             items.insert(1, Action.PRE_OPEN)

@@ -5,6 +5,7 @@ from common.PathObjects import PathObject, Folder, File, TypePathObject
 from common.PreviewsFactory import PreviewsFactory
 from common.Tab import Tab
 from areas.WindowArea import WindowArea
+from managers.DatabaseManager import DatabaseManager
 from managers.OverlayManager import QWidgetOverlayManager
 from managers.PreviewsManager import PreviewsManager
 from overlays.QActionAlertDialog import QActionAlertDialog
@@ -26,16 +27,20 @@ class MainWindowArea(WindowArea):
 
     def __init__(self, window: QWidgetOverlayManager,
                  preview_manager: PreviewsManager,
+                 db_manager: DatabaseManager,
+                 on_favorite=None,
                  on_new_tab=None):
         super().__init__(window, area=Areas.MainPanel)
 
         self.widgets = [[]]
+        self.db_manager = db_manager
         self.preview_manager = preview_manager
         self.max_column = self.width // (WIDTH_ITEM + MARGIN_ITEM)
         self.max_row = self.height // (HEIGHT_ITEM + MARGIN_ITEM)
 
         self._tab = None
         self.on_new_tab = on_new_tab
+        self.on_favorite = on_favorite
 
     def _get_x_y_new_last_item(self):
         last_row = self.widgets[-1]
@@ -130,6 +135,10 @@ class MainWindowArea(WindowArea):
         elif action == Action.OPEN_NEW_TAB:
             item = args[0]
             self.on_new_tab(item)
+        elif action == Action.ADD_FAVORITE:
+            item = args[0]
+            self.db_manager.favorites.add_favorite(item.path)
+            self.on_favorite(item)
 
     def click_action_create_path_object(self, overlay: QOverlay,
                                         new_name: str,
