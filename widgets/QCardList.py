@@ -1,4 +1,5 @@
 from PyQt5 import Qt
+from PyQt5.Qt import QFont
 from PyQt5.QtWidgets import QLabel
 from common.UtilsVisual import UtilsVisual
 from widgets.QImageBackground import QImageBackground
@@ -24,6 +25,7 @@ class QCardList(QImageBackground):
     def init_title(self):
         self.title = QLabel(self.title_txt)
         self.title.setParent(self)
+        self.title.setFont(QFont("Arial", 18))
         UtilsVisual.set_color_text(self.title, COLOR_TEXT)
         self.title.show()
         self.title.resize(self.width(), self.title.height())
