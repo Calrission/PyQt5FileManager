@@ -14,12 +14,12 @@ class QCardList(QImageBackground):
         self.resize(w, self.height())
         if len(self._items) != 0:
             self.refresh()
-        self.title = None
+        self.title_txt = None
         self.title = title
         self.init_title()
 
     def init_title(self):
-        self.title = QLabel(self.title)
+        self.title = QLabel(self.title_txt)
         self.title.setParent(self)
         values = ", ".join([str(i) for i in COLOR_TEXT])
         self.title.setStyleSheet("QLabel { color: rgb(" + values + "); }")
