@@ -46,7 +46,8 @@ class QCardList(QImageBackground):
         UtilsVisual.set_color_text(self.empty_label, COLOR_TEXT)
         self.empty_label.resize(self.width(), self.height())
         self.empty_label.setAlignment(Qt.Qt.AlignCenter)
-        self.empty_label.move(self.title.x(), self.start_list_labels )
+        self.empty_label.move(self.title.x(), self.start_list_labels)
+        self.empty_label.show()
         self._children.append(self.empty_label)
 
     def add_item(self, item: str):
