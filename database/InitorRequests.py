@@ -26,8 +26,15 @@ class InitorRequests:
     def get_fun_init_table(name_table: str):
         if name_table == "open_tabs":
             return InitorRequests.create_table_open_tabs
+        elif name_table == "favorites":
+            return InitorRequests.create_table_favorites
 
     @push_query_db_decorator
     def create_table_open_tabs(self, cursor: Cursor, conn: Connection):
         cursor.execute("create table 'open_tabs' (id INTEGER NOT NULL PRIMARY KEY, path STRING NOT NULL)")
+        conn.commit()
+
+    @push_query_db_decorator
+    def create_table_favorites(self, cursor: Cursor, conn: Connection):
+        cursor.execute("create table 'favorites' (id INTEGER NOT NULL PRIMARY KEY, path STRING NOT NULL)")
         conn.commit()

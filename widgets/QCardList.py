@@ -12,12 +12,13 @@ class QCardList(QImageBackground):
         super().__init__(parent, "files/back_tag_select")
         self._items = items if items is not None else []
         self._labels = []
+        self._children = []
         self.resize(w, self.height())
-        if len(self._items) != 0:
-            self.refresh()
         self.title_txt = title
+        self.empty_label = None
         self.title = None
         self.init_title()
+        self.refresh()
 
     def init_title(self):
         self.title = QLabel(self.title_txt)
@@ -27,40 +28,66 @@ class QCardList(QImageBackground):
         self.title.resize(self.width(), self.title.height())
         self.title.setAlignment(Qt.Qt.AlignCenter)
         self.title.move(self.title.x(), MARGIN_ITEM)
+        self._children.append(self.title)
+
+    def _get_bottom_max_y(self):
+        if len(self._children) == 0:
+            return 0, 0
+        return max([(i.y(), i.height()) for i in self._children])
+
+    def init_empty_label(self):
+        self.empty_label = QLabel("Пусто")
+        self.empty_label.setParent(self)
+        UtilsVisual.set_color_text(self.empty_label, COLOR_TEXT)
+        self.empty_label.resize(self.width(), self.height())
+        self.empty_label.setAlignment(Qt.Qt.AlignCenter)
+        self.empty_label.move(self.title.x(), self.title.y() + self.title.height() + MARGIN_ITEM * 2 )
+        self._children.append(self.empty_label)
 
     def add_item(self, item: str):
+        self.hide_empty_label()
         self._items.append(item)
         self._add_new_label(item)
 
     def refresh(self):
         self._clear_labels()
-        for item in self._items:
-            self._add_new_label(item)
+        if len(self._items) == 0:
+            self.init_empty_label()
+        else:
+            for item in self._items:
+                self._add_new_label(item)
+            self.hide_empty_label()
+        self._update_size()
 
     def clear(self):
         self._items.clear()
-        self._clear_labels()
+        self.refresh()
 
     def _add_new_label(self, text: str):
         x = MARGIN_ITEM * 2
-        y = self._labels[-1].y() + self._labels[-1].height() + MARGIN_ITEM * 2 if len(self._labels) > 0 else MARGIN_ITEM + self.title.y() + self.title.height()
+        bottom_y, bottom_height = self._get_bottom_max_y()
+        y = bottom_y + bottom_height + MARGIN_ITEM * 2
         width = self.width() - MARGIN_ITEM * 4
         new_item = QImageButton(self, text)
         new_item.resize(width, new_item.height())
         new_item.move(x, y)
         self._labels.append(new_item)
+        self._children.append(new_item)
         self._update_size()
 
     def _remove_label(self, text: str):
         index = self._items.index(text)
-        self._labels.remove(self._labels[index])
+        label = self._labels[index]
+        self._children.remove(label)
+        self._labels.remove(label)
 
     def remove_item(self, item: str):
         self._items.remove(item)
         self._remove_label(item)
 
     def _update_size(self):
-        h = self._labels[-1].y() + self._labels[-1].height() + MARGIN_ITEM * 2
+        bottom_y, bottom_height = self._get_bottom_max_y()
+        h = bottom_y + bottom_height + MARGIN_ITEM * 2
         self.resize(self.width(), h)
 
     def resizeEvent(self, a0: Qt.QResizeEvent) -> None:
@@ -69,3 +96,9 @@ class QCardList(QImageBackground):
     def _clear_labels(self):
         for label in self._labels:
             label.deleteLater()
+
+    def hide_empty_label(self):
+        if self.empty_label is not None:
+            self.empty_label.deleteLater()
+            self._children.remove(self.empty_label)
+        self.empty_label = None
