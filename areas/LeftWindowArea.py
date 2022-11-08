@@ -14,6 +14,22 @@ class LeftWindowArea(WindowArea):
         test.move(self.start_x + MARGIN_ITEM, self.start_y + MARGIN_ITEM)
         test.add_item("Test1")
         test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+        test.add_item("Test2")
+
+        self.children.append(test)
 
 
     

@@ -71,7 +71,7 @@ class Main(PreviewsManager, QWidgetOverlayManager, DatabaseManager):
                                                  click_next_history=self.click_next_history,
                                                  click_setting=self.click_setting)
 
-        self.mouse_listener = MouseArea([self.tabs, self.left, self.main, self.history_buttons])
+        self.mouse_listener = MouseArea([self.tabs, self.main, self.history_buttons, self.left])
 
         self.tabs.prepare()
 

@@ -2,7 +2,7 @@ from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QWidget, QLabel
 from common.UtilsVisual import UtilsVisual
 from values.Areas import Areas
-from values.ConstValues import COLOR_BACKGROUND_DEFAULT, HEIGHT, WIDTH
+from values.ConstValues import COLOR_BACKGROUND_DEFAULT, HEIGHT, WIDTH, MARGIN_ITEM
 
 
 class WindowArea:
@@ -60,7 +60,7 @@ class WindowArea:
         max_y = -1
         bottom_widget = None
         for widget in self.children:
-            if widget.y() > max_y:
+            if widget.y() + widget.height() > max_y:
                 bottom_widget = widget
                 max_y = widget.y()
         return bottom_widget
@@ -87,7 +87,7 @@ class WindowArea:
         max_x = -1
         right_widget = None
         for widget in self.children:
-            if widget.x() > max_x:
+            if widget.x() + widget.width() > max_x:
                 right_widget = widget
                 max_x = widget.x()
         return right_widget
