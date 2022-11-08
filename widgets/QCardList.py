@@ -56,6 +56,9 @@ class QCardList(QImageBackground):
         for item in items:
             self.add_item(item)
 
+    def get_items(self):
+        return self._items
+
     def re_move_labels(self):
         for index, label in enumerate(self._labels):
             prev_y = self._labels[index - 1].y() if index != 0 else self.start_list_labels
@@ -115,3 +118,7 @@ class QCardList(QImageBackground):
             self.empty_label.deleteLater()
             self._children.remove(self.empty_label)
         self.empty_label = None
+
+    def remove_all_item(self, need_remove):
+        for item in need_remove:
+            self.remove_item(item)

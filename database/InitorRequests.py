@@ -19,7 +19,7 @@ class InitorRequests:
         for table in self.tables:
             try:
                 self.get_fun_init_table(table)(self)
-            except sqlite3.OperationalError as e:
+            except sqlite3.OperationalError:
                 pass
 
     @staticmethod

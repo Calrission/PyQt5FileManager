@@ -21,4 +21,9 @@ class LeftWindowArea(WindowArea):
         self.favorites.add_all_item(paths)
 
     def refresh_favorites(self):
-        pass
+        paths = self.db_manager.favorites.get_favorites()
+        now_paths = self.favorites.get_items()
+        need_add = [path for path in paths if path not in now_paths]
+        need_remove = [path for path in now_paths if path not in paths]
+        self.favorites.remove_all_item(need_remove)
+        self.favorites.add_all_item(need_add)
