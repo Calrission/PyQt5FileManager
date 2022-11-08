@@ -1,17 +1,15 @@
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLabel
-
 from widgets.QImageBackground import QImageBackground
 from values.ConstValues import MARGIN_ITEM, COLOR_TEXT
 from widgets.QImageButton import QImageButton
 
 
 class QCardList(QImageBackground):
-    def __init__(self, parent, items: list = None):
+    def __init__(self, parent, w: int, items: list = None):
         super().__init__(parent, "files/back_tag_select")
         self._items = items if items is not None else []
         self._labels = []
-        self.resize(self.width(), self.height())
+        self.resize(w, self.height())
         if len(self._items) != 0:
             self.refresh()
 
@@ -36,6 +34,7 @@ class QCardList(QImageBackground):
         new_item.resize(width, new_item.height())
         new_item.move(x, y)
         self._labels.append(new_item)
+        self._update_size()
 
     def _remove_label(self, text: str):
         index = self._items.index(text)
@@ -44,6 +43,10 @@ class QCardList(QImageBackground):
     def remove_item(self, item: str):
         self._items.remove(item)
         self._remove_label(item)
+
+    def _update_size(self):
+        h = self._labels[-1].y() + self._labels[-1].height() + MARGIN_ITEM * 2
+        self.resize(self.width(), h)
 
     def resizeEvent(self, a0: Qt.QResizeEvent) -> None:
         self.init_background(a0.size().width(), a0.size().height())

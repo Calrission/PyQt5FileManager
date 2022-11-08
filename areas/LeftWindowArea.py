@@ -10,8 +10,7 @@ class LeftWindowArea(WindowArea):
         super().__init__(window, area=Areas.LeftPanel)
         self.db_manager = db_manager
 
-        test = QCardList(self.window)
-        test.resize(self.width - MARGIN_ITEM * 2, QCARDLIST_DEFAULT_HEIGHT)
+        test = QCardList(self.window, self.width - MARGIN_ITEM * 2)
         test.move(self.start_x + MARGIN_ITEM, self.start_y + MARGIN_ITEM)
         test.add_item("Test")
         test.add_item("Test")
