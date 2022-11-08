@@ -22,7 +22,7 @@ class QActionMenu(QOverlay):
         for index, item in enumerate(self.items):
             label = QLabel(item.value)
             label.setParent(self)
-            label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            UtilsVisual.set_color_text(self.label, COLOR_TEXT)
             label.adjustSize()
             label.move(MARGIN_ITEM_ACTION, index * 25 + MARGIN_ITEM_ACTION)
             label.show()

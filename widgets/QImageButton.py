@@ -1,6 +1,7 @@
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLabel
 
+from common.UtilsVisual import UtilsVisual
 from values.ConstValues import COLOR_TEXT, MARGIN_ITEM
 from widgets.QImageBackground import QImageBackground
 
@@ -11,8 +12,7 @@ class QImageButton(QImageBackground):
         self.text = text
         self.label_text = QLabel(self.text)
         self.label_text.setParent(self)
-        values = ", ".join([str(i) for i in COLOR_TEXT])
-        self.label_text.setStyleSheet("QLabel { color: rgb(" + values + "); }")
+        UtilsVisual.set_color_text(self.label_text, COLOR_TEXT)
         self.label_text.setAlignment(Qt.Qt.AlignCenter)
         self.label_text.show()
         self.resize(self.width(), self.height())

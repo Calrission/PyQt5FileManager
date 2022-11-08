@@ -1,8 +1,10 @@
 from PyQt5 import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QLabel
+
+from common.UtilsVisual import UtilsVisual
 from overlays.QOverlay import QOverlay
-from values.ConstValues import ALERT_OVERLAY_HEIGHT, ALERT_OVERLAY_WIDTH
+from values.ConstValues import ALERT_OVERLAY_HEIGHT, ALERT_OVERLAY_WIDTH, COLOR_TEXT
 
 
 class QActionAlertDialog(QOverlay):
@@ -23,7 +25,7 @@ class QActionAlertDialog(QOverlay):
         self._label.setParent(self)
         self._label.setFont(QFont("Arial", 14, QFont.Bold))
         self._label.setWordWrap(True)
-        self._label.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+        UtilsVisual.set_color_text(self._label, COLOR_TEXT)
         self._label.adjustSize()
         self._label.resize(self.width() - 20, self._label.height())
         self._label.setAlignment(Qt.Qt.AlignHCenter)
@@ -33,7 +35,7 @@ class QActionAlertDialog(QOverlay):
             positive = QLabel(self._positive_txt)
             positive.setParent(self)
             positive.setFont(QFont("Arial", 12, QFont.Bold))
-            positive.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            UtilsVisual.set_color_text(positive, COLOR_TEXT)
             positive.show()
             positive.move(self.width() - positive.width() - 20, self.height() - 40)
             if self._positive is not None:
@@ -43,7 +45,7 @@ class QActionAlertDialog(QOverlay):
             cancel = QLabel(self._negative_txt)
             cancel.setParent(self)
             cancel.setFont(QFont("Arial", 12, QFont.Bold))
-            cancel.setStyleSheet("QLabel { color: rgb(255, 255, 255); }")
+            UtilsVisual.set_color_text(cancel, COLOR_TEXT)
             cancel.move(20, self.height() - 40)
             if self._negative is not None:
                 cancel.mousePressEvent = lambda x: self._click_negative()

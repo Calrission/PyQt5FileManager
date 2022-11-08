@@ -33,3 +33,8 @@ class UtilsVisual:
     def get_w_h_image(file_path: str):
         pixmap = QPixmap(file_path)
         return pixmap.size().width(), pixmap.size().height()
+
+    @staticmethod
+    def set_color_text(label: QLabel, color: tuple):
+        values = ", ".join([str(i) for i in color])
+        label.setStyleSheet("QLabel { color: rgb(" + values + "); }")

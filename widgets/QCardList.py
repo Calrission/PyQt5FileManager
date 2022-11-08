@@ -1,6 +1,7 @@
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLabel
 
+from common.UtilsVisual import UtilsVisual
 from widgets.QImageBackground import QImageBackground
 from values.ConstValues import MARGIN_ITEM, COLOR_TEXT
 from widgets.QImageButton import QImageButton
@@ -14,15 +15,14 @@ class QCardList(QImageBackground):
         self.resize(w, self.height())
         if len(self._items) != 0:
             self.refresh()
-        self.title_txt = None
-        self.title = title
+        self.title_txt = title
+        self.title = None
         self.init_title()
 
     def init_title(self):
         self.title = QLabel(self.title_txt)
         self.title.setParent(self)
-        values = ", ".join([str(i) for i in COLOR_TEXT])
-        self.title.setStyleSheet("QLabel { color: rgb(" + values + "); }")
+        UtilsVisual.set_color_text(self.title, COLOR_TEXT)
         self.title.show()
         self.title.resize(self.width(), self.title.height())
         self.title.setAlignment(Qt.Qt.AlignCenter)

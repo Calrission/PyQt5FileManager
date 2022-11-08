@@ -30,8 +30,7 @@ class QTab(QWidget):
         self._reset_pixmap_background_tab()
 
     def _setupText(self):
-        values = ", ".join([str(i) for i in COLOR_TEXT])
-        self._text_view.setStyleSheet("QLabel { color: rgb(" + values + "); }")
+        UtilsVisual.set_color_text(self._text_view, COLOR_TEXT)
 
     def _reset_pixmap_background_tab(self):
         UtilsVisual.load_file_to_label_with_scaled(self.backgrounds[int(self.is_select)], self._image,
