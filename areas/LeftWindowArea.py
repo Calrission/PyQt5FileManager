@@ -12,8 +12,8 @@ class LeftWindowArea(WindowArea):
 
         test = QCardList(self.window, self.width - MARGIN_ITEM * 2, "Избранное")
         test.move(self.start_x + MARGIN_ITEM, self.start_y + MARGIN_ITEM)
-        test.add_item("Test")
-        test.add_item("Test")
+        test.add_item("Test1")
+        test.add_item("Test2")
 
 
     

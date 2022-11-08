@@ -17,6 +17,7 @@ class QCardList(QImageBackground):
         self.title_txt = title
         self.empty_label = None
         self.title = None
+        self.start_list_labels = 0
         self.init_title()
         self.refresh()
 
@@ -27,8 +28,10 @@ class QCardList(QImageBackground):
         self.title.show()
         self.title.resize(self.width(), self.title.height())
         self.title.setAlignment(Qt.Qt.AlignCenter)
-        self.title.move(self.title.x(), MARGIN_ITEM)
+        self.title.move(self.title.x(), 2 * MARGIN_ITEM)
         self._children.append(self.title)
+        self.title.show()
+        self.start_list_labels = self.title.y() + self.title.height()
 
     def _get_bottom_max_y(self):
         if len(self._children) == 0:
@@ -41,7 +44,7 @@ class QCardList(QImageBackground):
         UtilsVisual.set_color_text(self.empty_label, COLOR_TEXT)
         self.empty_label.resize(self.width(), self.height())
         self.empty_label.setAlignment(Qt.Qt.AlignCenter)
-        self.empty_label.move(self.title.x(), self.title.y() + self.title.height() + MARGIN_ITEM * 2 )
+        self.empty_label.move(self.title.x(), self.start_list_labels )
         self._children.append(self.empty_label)
 
     def add_item(self, item: str):
@@ -49,13 +52,17 @@ class QCardList(QImageBackground):
         self._items.append(item)
         self._add_new_label(item)
 
+    def re_move_labels(self):
+        for index, label in enumerate(self._labels):
+            prev_y = self._labels[index - 1].y() if index != 0 else self.start_list_labels
+            y = 2 * MARGIN_ITEM + prev_y
+            label.move(label.x(), y)
+
     def refresh(self):
-        self._clear_labels()
         if len(self._items) == 0:
             self.init_empty_label()
         else:
-            for item in self._items:
-                self._add_new_label(item)
+            self.re_move_labels()
             self.hide_empty_label()
         self._update_size()
 
@@ -78,12 +85,14 @@ class QCardList(QImageBackground):
     def _remove_label(self, text: str):
         index = self._items.index(text)
         label = self._labels[index]
+        label.deleteLater()
         self._children.remove(label)
         self._labels.remove(label)
 
     def remove_item(self, item: str):
-        self._items.remove(item)
         self._remove_label(item)
+        self._items.remove(item)
+        self.refresh()
 
     def _update_size(self):
         bottom_y, bottom_height = self._get_bottom_max_y()
