@@ -1,6 +1,5 @@
-from PyQt5 import Qt, QtGui
+from PyQt5 import Qt
 from PyQt5.QtWidgets import QLabel
-
 from common.UtilsVisual import UtilsVisual
 from widgets.QImageBackground import QImageBackground
 from values.ConstValues import MARGIN_ITEM, COLOR_TEXT
@@ -62,7 +61,7 @@ class QCardList(QImageBackground):
 
     def re_move_labels(self):
         for index, label in enumerate(self._labels):
-            prev_y = self._labels[index - 1].y() if index != 0 else self.start_list_labels
+            prev_y = self._labels[index - 1].y() + self._labels[index - 1].height() if index != 0 else self.start_list_labels
             y = 2 * MARGIN_ITEM + prev_y
             label.move(label.x(), y)
 
@@ -129,5 +128,3 @@ class QCardList(QImageBackground):
     def mouseMoveEvent(self, a0: Qt.QMouseEvent) -> None:
         super().mouseMoveEvent(a0)
         self.parentWidget().mouseMoveEvent(a0)
-
-

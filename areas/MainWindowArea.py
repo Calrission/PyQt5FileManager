@@ -40,7 +40,7 @@ class MainWindowArea(WindowArea):
 
         self._tab = None
         self.on_new_tab = on_new_tab
-        self.on_favorite = on_favorite
+        self.on_change_favorite = on_favorite
 
     def _get_x_y_new_last_item(self):
         last_row = self.widgets[-1]
@@ -91,7 +91,7 @@ class MainWindowArea(WindowArea):
             self.show_overlay_item(event.x() + view.x(), event.y() + view.y(), item)
 
     def show_overlay_item(self, x: int, y: int, item: PathObject):
-        overlay = QActionPathObject.get_instance(item, x, y, self.window)
+        overlay = QActionPathObject.get_instance(item, x, y, self.window, self.db_manager)
         overlay.clickItemEvent = self.eventItemOverlayPathObject
         self.window.add_new_overlay(overlay)
         self.window.show_overlay(overlay)
@@ -138,7 +138,11 @@ class MainWindowArea(WindowArea):
         elif action == Action.ADD_FAVORITE:
             item = args[0]
             self.db_manager.favorites.add_favorite(item.path)
-            self.on_favorite(item)
+            self.on_change_favorite(item)
+        elif action == Action.REMOVE_FAVORITE:
+            item = args[0]
+            self.db_manager.favorites.remove_favorite(item.path)
+            self.on_change_favorite(item)
 
     def click_action_create_path_object(self, overlay: QOverlay,
                                         new_name: str,

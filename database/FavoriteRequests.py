@@ -17,3 +17,6 @@ class FavoriteRequests:
     def remove_favorite(self, path: str, cursor: Cursor, conn: Connection):
         cursor.execute(f"delete from favorites where path='{path}'")
         conn.commit()
+
+    def check_favorite(self, path):
+        return path in self.get_favorites()
