@@ -23,7 +23,7 @@ lst = list(filter(lambda x: "count_lines.py" not in x and ".py" in x and ".pyc" 
 
 count = 0
 for file in lst:
-    with open(file, "r") as f:
+    with open(file, "r", encoding="utf-8") as f:
         count_file = len(f.read().split("\n"))
         count += count_file
         print(f"{f.name} - {count_file}")
