@@ -1,17 +1,32 @@
 from PyQt5 import Qt
+from PyQt5.QtWidgets import QLabel
+
 from widgets.QImageBackground import QImageBackground
 from values.ConstValues import MARGIN_ITEM, COLOR_TEXT
 from widgets.QImageButton import QImageButton
 
 
 class QCardList(QImageBackground):
-    def __init__(self, parent, w: int, items: list = None):
+    def __init__(self, parent, w: int, title: str, items: list = None):
         super().__init__(parent, "files/back_tag_select")
         self._items = items if items is not None else []
         self._labels = []
         self.resize(w, self.height())
         if len(self._items) != 0:
             self.refresh()
+        self.title = None
+        self.title = title
+        self.init_title()
+
+    def init_title(self):
+        self.title = QLabel(self.title)
+        self.title.setParent(self)
+        values = ", ".join([str(i) for i in COLOR_TEXT])
+        self.title.setStyleSheet("QLabel { color: rgb(" + values + "); }")
+        self.title.show()
+        self.title.resize(self.width(), self.title.height())
+        self.title.setAlignment(Qt.Qt.AlignCenter)
+        self.title.move(self.title.x(), MARGIN_ITEM)
 
     def add_item(self, item: str):
         self._items.append(item)
@@ -28,7 +43,7 @@ class QCardList(QImageBackground):
 
     def _add_new_label(self, text: str):
         x = MARGIN_ITEM * 2
-        y = self._labels[-1].y() + self._labels[-1].height() + MARGIN_ITEM * 2 if len(self._labels) > 0 else MARGIN_ITEM * 2
+        y = self._labels[-1].y() + self._labels[-1].height() + MARGIN_ITEM * 2 if len(self._labels) > 0 else MARGIN_ITEM + self.title.y() + self.title.height()
         width = self.width() - MARGIN_ITEM * 4
         new_item = QImageButton(self, text)
         new_item.resize(width, new_item.height())
