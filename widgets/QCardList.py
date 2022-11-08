@@ -52,6 +52,10 @@ class QCardList(QImageBackground):
         self._items.append(item)
         self._add_new_label(item)
 
+    def add_all_item(self, items: list):
+        for item in items:
+            self.add_item(item)
+
     def re_move_labels(self):
         for index, label in enumerate(self._labels):
             prev_y = self._labels[index - 1].y() if index != 0 else self.start_list_labels

@@ -13,7 +13,7 @@ def push_query_db_decorator(fun):
 
 class InitorRequests:
     def __init__(self):
-        self.tables = ["open_tabs"]
+        self.tables = ["open_tabs", "favorites"]
 
     def init_all_tables(self):
         for table in self.tables:

@@ -10,26 +10,15 @@ class LeftWindowArea(WindowArea):
         super().__init__(window, area=Areas.LeftPanel)
         self.db_manager = db_manager
 
-        test = QCardList(self.window, self.width - MARGIN_ITEM * 2, "Избранное")
-        test.move(self.start_x + MARGIN_ITEM, self.start_y + MARGIN_ITEM)
-        test.add_item("Test1")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
-        test.add_item("Test2")
+        self.favorites = QCardList(self.window, self.width - MARGIN_ITEM * 2, "Избранное")
+        self.favorites.move(self.start_x + MARGIN_ITEM, self.start_y + MARGIN_ITEM)
 
-        self.children.append(test)
+        self.children.append(self.favorites)
+        self._init_content_favorites()
 
+    def _init_content_favorites(self):
+        paths = self.db_manager.favorites.get_favorites()
+        self.favorites.add_all_item(paths)
 
-    
+    def refresh_favorites(self):
+        pass
