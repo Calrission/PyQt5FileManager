@@ -1,4 +1,4 @@
-from PyQt5 import Qt
+from PyQt5 import Qt, QtGui
 from PyQt5.QtWidgets import QLabel
 
 from common.UtilsVisual import UtilsVisual
@@ -86,6 +86,7 @@ class QCardList(QImageBackground):
         new_item = QImageButton(self, text)
         new_item.resize(width, new_item.height())
         new_item.move(x, y)
+        new_item.setMouseTracking(True)
         new_item.show()
         self._labels.append(new_item)
         self._children.append(new_item)
@@ -124,3 +125,9 @@ class QCardList(QImageBackground):
     def remove_all_item(self, need_remove):
         for item in need_remove:
             self.remove_item(item)
+
+    def mouseMoveEvent(self, a0: Qt.QMouseEvent) -> None:
+        super().mouseMoveEvent(a0)
+        self.parentWidget().mouseMoveEvent(a0)
+
+
