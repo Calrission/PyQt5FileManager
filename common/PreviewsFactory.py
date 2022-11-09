@@ -11,7 +11,7 @@ class PreviewsFactory:
         if isinstance(path_object, File):
             if path_object.get_type_format() == TypeFormatFile.MEDIA:
                 return PreviewsFactory.get_preview_media_file(x, y, parent, path_object)
-            if path_object.get_type_format() == TypeFormatFile.TXT:
+            if path_object.get_type_format() in [TypeFormatFile.TXT, TypeFormatFile.CODE]:
                 return QTextPreview(x, y, path_object, parent)
 
     @staticmethod
